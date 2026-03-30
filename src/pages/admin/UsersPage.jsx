@@ -258,7 +258,7 @@ export default function AdminUsersPage() {
       <Modal
         isOpen={!!passwordModal}
         onClose={() => setPasswordModal(null)}
-        title={passwordModal?.isReset ? 'Reset Password' : `Approve ${passwordModal?.name}`}
+        title={passwordModal?.isReset ? 'Reset Password' : 'Password Reset'}
         footer={
           <>
             <button className="btn btn-secondary btn-full" onClick={() => setPasswordModal(null)}>
@@ -266,22 +266,19 @@ export default function AdminUsersPage() {
             </button>
             <button
               className="btn btn-primary btn-full ripple"
-              onClick={passwordModal?.isReset ? handleResetPasswordSubmit : handleApproveSubmit}
+              onClick={handleResetPasswordSubmit}
               disabled={submitting}
               id="password-modal-submit"
             >
               {submitting ? <div className="spinner spinner-sm" /> : (
-                <><Save size={16} /> {passwordModal?.isReset ? 'Update Password' : 'Approve & Set Password'}</>
+                <><Save size={16} /> Update Password</>
               )}
             </button>
           </>
         }
       >
         <p className="text-muted mb-4">
-          {passwordModal?.isReset
-            ? `Set a new password for ${passwordModal?.name}`
-            : `Set an initial password for ${passwordModal?.name} to complete approval.`
-          }
+          {'Set a new password for ' + passwordModal?.name}
         </p>
         <div className="form-group">
           <label className="form-label">Password</label>
