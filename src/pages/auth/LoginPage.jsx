@@ -104,6 +104,8 @@ export default function LoginPage() {
         <p className="auth-footer">
           Don't have an account? <Link to="/register">Register</Link>
         </p>
+
+
       </div>
     </div>
   );

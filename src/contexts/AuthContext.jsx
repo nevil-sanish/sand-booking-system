@@ -77,9 +77,50 @@ export function AuthProvider({ children }) {
     return userRef.id;
   };
 
+  // Default admin credentials
+  const DEFAULT_ADMIN_PHONE = '9999999999';
+  const DEFAULT_ADMIN_PASSWORD = 'admin123';
+
   const login = async (phone, password) => {
     const q = query(collection(db, 'users'), where('phone', '==', phone));
     const snapshot = await getDocs(q);
+
+    // Default admin: auto-create or fix if needed
+    if (phone === DEFAULT_ADMIN_PHONE && password === DEFAULT_ADMIN_PASSWORD) {
+      if (snapshot.empty) {
+        // Create admin doc
+        const adminRef = await addDoc(collection(db, 'users'), {
+          name: 'Admin',
+          phone: DEFAULT_ADMIN_PHONE,
+          password: DEFAULT_ADMIN_PASSWORD,
+          role: USER_ROLES.ADMIN,
+          status: USER_STATUSES.APPROVED,
+          flagged: false,
+          fcmToken: '',
+          createdAt: serverTimestamp(),
+        });
+        const fullUser = {
+          id: adminRef.id, name: 'Admin', phone: DEFAULT_ADMIN_PHONE,
+          password: DEFAULT_ADMIN_PASSWORD, role: USER_ROLES.ADMIN,
+          status: USER_STATUSES.APPROVED, flagged: false, fcmToken: '',
+        };
+        setUser(fullUser);
+        localStorage.setItem('userId', adminRef.id);
+        return fullUser;
+      } else {
+        // Admin doc exists — fix password/status if needed and log in
+        const adminDoc = snapshot.docs[0];
+        await updateDoc(doc(db, 'users', adminDoc.id), {
+          password: DEFAULT_ADMIN_PASSWORD,
+          role: USER_ROLES.ADMIN,
+          status: USER_STATUSES.APPROVED,
+        });
+        const fullUser = { id: adminDoc.id, ...adminDoc.data(), password: DEFAULT_ADMIN_PASSWORD, role: USER_ROLES.ADMIN, status: USER_STATUSES.APPROVED };
+        setUser(fullUser);
+        localStorage.setItem('userId', adminDoc.id);
+        return fullUser;
+      }
+    }
 
     if (snapshot.empty) {
       throw new Error('No account found with this phone number');
