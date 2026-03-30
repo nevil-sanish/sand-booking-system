@@ -74,6 +74,15 @@ export function AuthProvider({ children }) {
       createdAt: serverTimestamp(),
     });
 
+    // Notify Admins
+    await addDoc(collection(db, 'notifications'), {
+      title: 'New User Registration',
+      message: `${name} (${phone}) registered and is awaiting approval.`,
+      read: false,
+      createdAt: serverTimestamp(),
+      type: 'user'
+    });
+
     return userRef.id;
   };
 

@@ -6,12 +6,14 @@ import { useMessages } from '../../hooks/useMessages';
 import Spinner from '../../components/common/Spinner';
 import { getInitials, formatPrice, formatRelativeTime } from '../../utils/formatters';
 import { Package, Users, MessageSquare, ListTodo, CheckCircle, XCircle, Layers } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
   const { orders, loading: ordersLoading } = useOrders(null, true);
   const { users, loading: usersLoading, getPendingUsers, getApprovedUsers } = useUsers();
   const { items, loading: itemsLoading } = useItems(true);
   const { getMessagesByUser, loading: msgsLoading } = useMessages(null, true);
+  const navigate = useNavigate();
 
   const [ordersTab, setOrdersTab] = useState('pending');
   const [selectedChatUser, setSelectedChatUser] = useState(null);
@@ -48,14 +50,14 @@ export default function DashboardPage() {
         <div className="cbdc-col">
           {/* USERS ROW */}
           <div className="cbdc-row">
-            <div className="cbdc-widget hover-lift">
+            <div className="cbdc-widget hover-lift card-clickable" onClick={() => navigate('/admin/users')}>
               <div className="cbdc-widget-title flex-between">
                 <span>Active Users</span>
                 <Users size={14} style={{ color: 'var(--color-primary)' }} />
               </div>
               <div className="cbdc-stat">{activeUsers.length}</div>
             </div>
-            <div className="cbdc-widget hover-lift">
+            <div className="cbdc-widget hover-lift card-clickable" onClick={() => navigate('/admin/users')}>
               <div className="cbdc-widget-title flex-between">
                 <span>Pending Users</span>
                 <Users size={14} style={{ color: 'var(--color-warning)' }} />
@@ -66,14 +68,14 @@ export default function DashboardPage() {
 
           {/* ORDERS ROW */}
           <div className="cbdc-row">
-            <div className="cbdc-widget hover-lift">
+            <div className="cbdc-widget hover-lift card-clickable" onClick={() => navigate('/admin/orders')}>
               <div className="cbdc-widget-title flex-between">
                 <span>Active Orders</span>
                 <Package size={14} style={{ color: 'var(--color-info)' }} />
               </div>
               <div className="cbdc-stat">{confirmedOrders.length}</div>
             </div>
-            <div className="cbdc-widget hover-lift">
+            <div className="cbdc-widget hover-lift card-clickable" onClick={() => navigate('/admin/orders')}>
               <div className="cbdc-widget-title flex-between">
                 <span>Pending Orders</span>
                 <Package size={14} style={{ color: 'var(--color-warning)' }} />

@@ -5,7 +5,7 @@ import { useCart } from '../../contexts/CartContext';
 import { useToast } from '../../contexts/ToastContext';
 import Spinner from '../../components/common/Spinner';
 import EmptyState from '../../components/common/EmptyState';
-import { Mountain, Plus, ShoppingCart, Package } from 'lucide-react';
+import { Mountain, Plus, Minus, ShoppingCart, Package } from 'lucide-react';
 import { formatPrice } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,13 +13,25 @@ export default function HomePage() {
   const { items, loading: itemsLoading } = useItems(true);
   const { orders, loading: ordersLoading } = useOrders(null, false);
   const { user } = useAuth();
-  const { addToCart, totalItems, totalPrice } = useCart();
+  const { cartItems, addToCart, updateQuantity, totalItems, totalPrice } = useCart();
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleAddToCart = (item) => {
-    addToCart(item, 1);
-    toast.success(`${item.name} added to cart`);
+  const handleIncrement = (item) => {
+    const existing = cartItems.find(ci => ci.itemId === item.id);
+    if (existing) {
+      updateQuantity(item.id, existing.quantity + 1);
+    } else {
+      addToCart(item, 1);
+      toast.success(`${item.name} added to cart`);
+    }
+  };
+
+  const handleDecrement = (item) => {
+    const existing = cartItems.find(ci => ci.itemId === item.id);
+    if (existing) {
+      updateQuantity(item.id, existing.quantity - 1);
+    }
   };
 
   if (itemsLoading || ordersLoading) return <Spinner text="Loading your dashboard..." />;
@@ -40,23 +52,46 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ITEMS HORIZONTAL SCROLL */}
-      <div className="horizontal-scroll stagger-children mb-6">
+      {/* AVAILABLE ITEMS - Vertical List for Mobile */}
+      <h2 className="section-title mb-4">Available Items</h2>
+      <div className="stagger-children mb-6" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
         {items.length === 0 ? (
-          <p className="text-muted">No items available.</p>
+          <p className="text-muted text-center">No items available right now.</p>
         ) : (
-          items.map(item => (
-            <div key={item.id} className="card horizontal-item glass-panel hover-lift card-clickable" onClick={() => handleAddToCart(item)} style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              <div className="item-card-icon" style={{ marginBottom: 'var(--space-2)' }}>
-                <img src="/logo.png" alt="Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+          items.map(item => {
+            const cartItem = cartItems.find(ci => ci.itemId === item.id);
+            const quantity = cartItem ? cartItem.quantity : 0;
+
+            return (
+              <div key={item.id} className="card glass-panel" style={{ padding: 'var(--space-4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flex: 1, minWidth: 0 }}>
+                  <div className="item-card-icon" style={{ flexShrink: 0 }}>
+                    <img src="/logo.png" alt="Logo" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h3>
+                    <div>
+                      <span style={{ fontSize: 'var(--font-size-md)', fontWeight: 600, color: 'var(--color-primary)' }}>{formatPrice(item.price)}</span>
+                      <span className="text-muted" style={{ fontSize: 'var(--font-size-xs)' }}> / {item.unit || 'load'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quantity Controls */}
+                <div className="qty-selector" style={{ background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-full)' }}>
+                  <button className="qty-btn" onClick={() => handleDecrement(item)} disabled={quantity === 0} style={{ width: 32, height: 32, opacity: quantity === 0 ? 0.3 : 1 }}>
+                    <Minus size={14} />
+                  </button>
+                  <span className="qty-value" style={{ borderLeft: 'none', borderRight: 'none', padding: '0 var(--space-2)', minWidth: 28, fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {quantity}
+                  </span>
+                  <button className="qty-btn" onClick={() => handleIncrement(item)} style={{ width: 32, height: 32 }}>
+                    <Plus size={14} />
+                  </button>
+                </div>
               </div>
-              <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 600 }}>{item.name}</h3>
-              <div>
-                <span className="item-card-price" style={{ fontSize: 'var(--font-size-lg)' }}>{formatPrice(item.price)}</span>
-                <span className="item-card-unit text-muted" style={{ fontSize: 'var(--font-size-xs)' }}> / {item.unit || 'load'}</span>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

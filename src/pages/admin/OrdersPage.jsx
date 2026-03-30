@@ -7,7 +7,7 @@ import { ORDER_STATUSES } from '../../utils/constants';
 import { formatPrice, formatRelativeTime, formatPhone } from '../../utils/formatters';
 import {
   Package, MapPin, Clock, Phone as PhoneIcon,
-  CheckCircle, XCircle, Check, ExternalLink, User
+  CheckCircle, XCircle, Check, ExternalLink, User, Trash2
 } from 'lucide-react';
 
 const tabs = [
@@ -19,7 +19,7 @@ const tabs = [
 
 export default function AdminOrdersPage() {
   const [activeTab, setActiveTab] = useState('pending');
-  const { orders, loading, updateOrderStatus, getOrdersByStatus } = useOrders(null, true);
+  const { orders, loading, updateOrderStatus, getOrdersByStatus, deleteOrder } = useOrders(null, true);
   const toast = useToast();
 
   const handleAction = async (orderId, status, label) => {
@@ -168,6 +168,24 @@ export default function AdminOrdersPage() {
                       Complete
                     </button>
                   )}
+
+                  <button
+                    className="btn btn-ghost btn-danger btn-sm ripple"
+                    onClick={async () => {
+                      if(window.confirm('Are you sure you want to permanently delete this order?')) {
+                        try {
+                          await deleteOrder(order.id);
+                          toast.success('Order deleted successfully');
+                        } catch {
+                          toast.error('Failed to delete order');
+                        }
+                      }
+                    }}
+                    title="Delete permanently"
+                    id={`delete-${order.id}`}
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               </div>
             </div>

@@ -128,7 +128,7 @@ export default function AdminMessagesPage() {
           />
         ) : (
           userMessages.map(msg => (
-            <div key={msg.id} className="message-bubble message-outgoing">
+            <div key={msg.id} className={`message-bubble ${msg.senderId === 'admin' ? 'message-outgoing' : 'message-incoming'}`}>
               <p>{msg.content}</p>
               <div className="message-time" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>{msg.createdAt ? formatRelativeTime(msg.createdAt) : ''}</span>

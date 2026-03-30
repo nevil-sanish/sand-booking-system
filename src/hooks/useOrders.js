@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase';
 import {
   collection, query, where, orderBy, onSnapshot,
-  addDoc, updateDoc, doc, serverTimestamp
+  addDoc, updateDoc, doc, serverTimestamp, deleteDoc
 } from 'firebase/firestore';
 
 export function useOrders(userId = null, isAdmin = false) {
@@ -45,6 +45,15 @@ export function useOrders(userId = null, isAdmin = false) {
       status: 'pending',
       createdAt: serverTimestamp(),
     });
+    // Add Notification
+    await addDoc(collection(db, 'notifications'), {
+      title: 'New Order',
+      message: `A new order has been placed and is waiting for confirmation.`,
+      read: false,
+      createdAt: serverTimestamp(),
+      type: 'order'
+    });
+
     return docRef.id;
   };
 
@@ -56,5 +65,9 @@ export function useOrders(userId = null, isAdmin = false) {
     return orders.filter(order => order.status === status);
   };
 
-  return { orders, loading, createOrder, updateOrderStatus, getOrdersByStatus };
+  const deleteOrder = async (orderId) => {
+    await deleteDoc(doc(db, 'orders', orderId));
+  };
+
+  return { orders, loading, createOrder, updateOrderStatus, getOrdersByStatus, deleteOrder };
 }

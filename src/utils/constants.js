@@ -28,6 +28,7 @@ export const NAV_ITEMS_USER = [
   { path: '/', label: 'Order', icon: 'Package' },
   { path: '/messages', label: 'Messages', icon: 'MessageSquare' },
   { path: '/profile', label: 'Profile', icon: 'User' },
+  { path: '/contact', label: 'Contact', icon: 'Phone' },
 ];
 
 export const NAV_ITEMS_ADMIN = [
@@ -36,4 +37,5 @@ export const NAV_ITEMS_ADMIN = [
   { path: '/admin/items', label: 'Items', icon: 'Layers' },
   { path: '/admin/users', label: 'Users', icon: 'Users' },
   { path: '/admin/messages', label: 'Messages', icon: 'MessageSquare' },
+  { path: '/admin/feedback', label: 'Feedback', icon: 'MessageCircle' },
 ];

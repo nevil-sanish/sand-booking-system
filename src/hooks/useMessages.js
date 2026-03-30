@@ -45,6 +45,7 @@ export function useMessages(userId = null, isAdmin = false) {
   const sendMessage = async (targetUserId, content) => {
     await addDoc(collection(db, 'messages'), {
       userId: targetUserId,
+      senderId: isAdmin ? 'admin' : userId,
       content,
       status: MESSAGE_STATUSES.SENT,
       createdAt: serverTimestamp(),

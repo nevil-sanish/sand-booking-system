@@ -18,6 +18,7 @@ import OrderSummaryPage from './pages/user/OrderSummaryPage';
 import UserOrdersPage from './pages/user/OrdersPage';
 import UserMessagesPage from './pages/user/MessagesPage';
 import ProfilePage from './pages/user/ProfilePage';
+import ContactFeedbackPage from './pages/user/ContactFeedbackPage';
 
 // Admin Pages
 import DashboardPage from './pages/admin/DashboardPage';
@@ -27,6 +28,7 @@ import AdminUsersPage from './pages/admin/UsersPage';
 import AdminMessagesPage from './pages/admin/MessagesPage';
 import AdminNotificationsPage from './pages/admin/NotificationsPage';
 import EditContactPage from './pages/admin/EditContactPage';
+import AdminFeedbackPage from './pages/admin/FeedbackPage';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading, isAdmin } = useAuth();
@@ -80,6 +82,7 @@ function AppRoutes() {
         <Route path="messages" element={<UserMessagesPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="change-password" element={<ChangePasswordPage />} />
+        <Route path="contact" element={<ContactFeedbackPage />} />
       </Route>
 
       {/* Admin Routes */}
@@ -91,6 +94,7 @@ function AppRoutes() {
         <Route path="messages" element={<AdminMessagesPage />} />
         <Route path="notifications" element={<AdminNotificationsPage />} />
         <Route path="settings" element={<EditContactPage />} />
+        <Route path="feedback" element={<AdminFeedbackPage />} />
       </Route>
 
       {/* Catch-all */}
