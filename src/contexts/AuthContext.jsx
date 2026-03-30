@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
     }
   }, [user?.id]);
 
-  const register = async (name, phone) => {
+  const register = async (name, phone, password) => {
     // Check if phone already exists
     const q = query(collection(db, 'users'), where('phone', '==', phone));
     const snapshot = await getDocs(q);
@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
     const userRef = await addDoc(collection(db, 'users'), {
       name,
       phone,
-      password: '',
+      password,
       role: USER_ROLES.USER,
       status: USER_STATUSES.PENDING,
       flagged: false,
@@ -132,6 +132,15 @@ export function AuthProvider({ children }) {
     if (userData.status === USER_STATUSES.PENDING) {
       throw new Error('Your account is pending approval. Please wait for admin confirmation.');
     }
+    
+    if (userData.status === USER_STATUSES.REJECTED) {
+      throw new Error('Your account request was rejected.');
+    }
+
+    if (userData.status === USER_STATUSES.APPROVED && (!userData.password || userData.password === '')) {
+      // Legacy catch for old accounts without a password, though all new ones will have it.
+      throw new Error('NEEDS_SETUP');
+    }
 
     if (userData.password !== password) {
       throw new Error('Incorrect password');
@@ -142,6 +151,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('userId', userDoc.id);
     return fullUser;
   };
+
+
 
   const logout = () => {
     setUser(null);

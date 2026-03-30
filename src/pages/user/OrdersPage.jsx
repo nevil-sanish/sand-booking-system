@@ -3,7 +3,7 @@ import { useOrders } from '../../hooks/useOrders';
 import { useToast } from '../../contexts/ToastContext';
 import Spinner from '../../components/common/Spinner';
 import EmptyState from '../../components/common/EmptyState';
-import { formatPrice, formatDateTime, formatRelativeTime } from '../../utils/formatters';
+import { formatPrice, formatRelativeTime } from '../../utils/formatters';
 import { Package, MapPin, Clock, XCircle, ExternalLink } from 'lucide-react';
 
 const statusLabels = {

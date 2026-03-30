@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase';
 import {
   collection, query, orderBy, onSnapshot,
-  updateDoc, doc, where, getDocs
+  updateDoc, doc, deleteDoc
 } from 'firebase/firestore';
 import { USER_STATUSES } from '../utils/constants';
 
@@ -28,18 +28,20 @@ export function useUsers() {
     return () => unsubscribe();
   }, []);
 
-  const approveUser = async (userId, password) => {
+  const approveUser = async (userId) => {
     await updateDoc(doc(db, 'users', userId), {
       status: USER_STATUSES.APPROVED,
-      password,
     });
   };
 
   const rejectUser = async (userId) => {
     await updateDoc(doc(db, 'users', userId), {
       status: USER_STATUSES.REJECTED,
-      password: '',
     });
+  };
+
+  const deleteUser = async (userId) => {
+    await deleteDoc(doc(db, 'users', userId));
   };
 
   const flagUser = async (userId, flagged) => {
@@ -67,6 +69,7 @@ export function useUsers() {
     loading,
     approveUser,
     rejectUser,
+    deleteUser,
     flagUser,
     setUserPassword,
     getPendingUsers,

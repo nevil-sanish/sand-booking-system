@@ -7,42 +7,57 @@ import EmptyState from '../../components/common/EmptyState';
 import { getInitials, formatPhone } from '../../utils/formatters';
 import { validatePassword } from '../../utils/validators';
 import {
-  Users, UserCheck, UserX, AlertTriangle, Flag, FlagOff, Lock, Shield, Save
+  Users, UserCheck, UserX, AlertTriangle, Flag, FlagOff, Lock, Shield, Save, Eye, EyeOff, Trash2, Ban
 } from 'lucide-react';
 
 export default function AdminUsersPage() {
-  const { users, loading, approveUser, rejectUser, flagUser, setUserPassword, getPendingUsers, getApprovedUsers, getRejectedUsers } = useUsers();
+  const { users, loading, approveUser, rejectUser, deleteUser, flagUser, setUserPassword, getPendingUsers, getApprovedUsers, getRejectedUsers } = useUsers();
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('pending');
   const [passwordModal, setPasswordModal] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState({});
 
-  const handleApprove = (user) => {
-    setPasswordModal(user);
-    setPassword('');
-    setPasswordError('');
+  const togglePasswordVisibility = (userId) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [userId]: !prev[userId]
+    }));
   };
 
-  const handleApproveSubmit = async () => {
-    const err = validatePassword(password);
-    if (err) {
-      setPasswordError(err);
-      return;
-    }
-
-    setSubmitting(true);
+  const handleApprove = async (user) => {
+    if (!window.confirm(`Are you sure you want to approve ${user.name}?`)) return;
     try {
-      await approveUser(passwordModal.id, password);
-      toast.success(`${passwordModal.name} approved`);
-      setPasswordModal(null);
+      await approveUser(user.id);
+      toast.success(`${user.name} approved`);
     } catch {
       toast.error('Failed to approve user');
-    } finally {
-      setSubmitting(false);
     }
   };
+
+  const handleReject = async (user) => {
+    if (!window.confirm(`Are you sure you want to reject/ban ${user.name}?`)) return;
+    try {
+      await rejectUser(user.id);
+      toast.success(`${user.name} banned`);
+    } catch {
+      toast.error('Failed to ban user');
+    }
+  };
+
+  const handleDelete = async (user) => {
+    if (!window.confirm(`Are you sure you want to PERMANENTLY delete ${user.name}? This action cannot be undone.`)) return;
+    try {
+      await deleteUser(user.id);
+      toast.success(`${user.name} deleted successfully`);
+    } catch {
+      toast.error('Failed to delete user');
+    }
+  };
+
+
 
   const handleFlag = async (user) => {
     try {
@@ -135,32 +150,53 @@ export default function AdminUsersPage() {
               <div className="avatar">
                 {getInitials(u.name)}
               </div>
-              <div className="admin-user-info">
-                <p className="admin-user-name" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                  {u.name}
-                  {u.flagged && (
-                    <AlertTriangle size={14} style={{ color: 'var(--color-warning)' }} />
+              <div className="admin-user-info" style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <p className="admin-user-name" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                      {u.name}
+                      {u.flagged && (
+                        <AlertTriangle size={14} style={{ color: 'var(--color-warning)' }} />
+                      )}
+                    </p>
+                    <p className="admin-user-phone text-muted mt-1">{formatPhone(u.phone)}</p>
+                    {u.status === 'approved' && u.password && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
+                          {visiblePasswords[u.id] ? `Pwd: ${u.password}` : 'Pwd: ••••••••'}
+                        </span>
+                        <button
+                          className="btn btn-ghost btn-icon btn-sm"
+                          onClick={() => togglePasswordVisibility(u.id)}
+                          style={{ padding: '0', minWidth: 'auto', minHeight: 'auto', color: 'var(--color-primary)' }}
+                        >
+                          {visiblePasswords[u.id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                      </div>
+                    )}
+                    {u.status === 'approved' && !u.password && (
+                      <span className="badge badge-pending" style={{ marginTop: 'var(--space-2)' }}>Needs Setup</span>
+                    )}
+                  </div>
+                  {u.role === 'admin' && (
+                    <span className="badge badge-confirmed">
+                      <Shield size={10} /> Admin
+                    </span>
                   )}
-                </p>
-                <p className="admin-user-phone">{formatPhone(u.phone)}</p>
-                {u.role === 'admin' && (
-                  <span className="badge badge-confirmed" style={{ marginTop: 4 }}>
-                    <Shield size={10} /> Admin
-                  </span>
-                )}
+                </div>
               </div>
               <div className="admin-user-actions">
                 {u.status === 'pending' ? (
                   <>
                     <button
-                      className="btn btn-danger btn-sm ripple"
+                      className="btn btn-danger btn-sm hover-lift"
                       onClick={() => handleReject(u)}
                     >
-                      <UserX size={14} />
+                      <Ban size={14} />
                       Reject
                     </button>
                     <button
-                      className="btn btn-success btn-sm ripple"
+                      className="btn btn-primary btn-sm hover-lift"
                       onClick={() => handleApprove(u)}
                       id={`approve-${u.id}`}
                     >
@@ -171,7 +207,7 @@ export default function AdminUsersPage() {
                 ) : u.status === 'approved' ? (
                   <>
                     <button
-                      className={`btn btn-sm ripple ${u.flagged ? 'btn-secondary' : 'btn-ghost'}`}
+                      className={`btn btn-sm hover-lift ${u.flagged ? 'btn-secondary' : 'btn-ghost'}`}
                       onClick={() => handleFlag(u)}
                       title={u.flagged ? 'Unflag' : 'Flag as suspicious'}
                       id={`flag-${u.id}`}
@@ -180,22 +216,37 @@ export default function AdminUsersPage() {
                       {u.flagged ? <FlagOff size={14} /> : <Flag size={14} />}
                     </button>
                     <button
-                      className="btn btn-ghost btn-sm ripple"
-                      onClick={() => handleResetPassword(u)}
-                      title="Reset Password"
-                      id={`reset-pw-${u.id}`}
+                      className="btn btn-danger btn-sm hover-lift"
+                      onClick={() => handleReject(u)}
+                      title="Ban User"
                     >
-                      <Lock size={14} />
+                      <Ban size={14} />
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm hover-lift"
+                      onClick={() => handleDelete(u)}
+                      title="Delete User"
+                    >
+                      <Trash2 size={14} />
                     </button>
                   </>
                 ) : (
-                  <button
-                    className="btn btn-success btn-sm ripple"
-                    onClick={() => handleApprove(u)}
-                  >
-                    <UserCheck size={14} />
-                    Restore
-                  </button>
+                  <>
+                    <button
+                      className="btn btn-primary btn-sm hover-lift"
+                      onClick={() => handleApprove(u)}
+                    >
+                      <UserCheck size={14} />
+                      Restore
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm hover-lift"
+                      onClick={() => handleDelete(u)}
+                      title="Delete User"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </>
                 )}
               </div>
             </div>

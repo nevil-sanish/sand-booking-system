@@ -245,32 +245,41 @@
   backdrop-filter: blur(4px);
   z-index: var(--z-modal-backdrop);
   display: flex;
-  align-items: flex-end;
+  align-items: center; /* Changed from flex-end to center for floating dialog */
   justify-content: center;
   padding: var(--space-4);
   animation: fadeIn 200ms ease;
 }
 
 .modal {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  width: 100%;
-  max-width: var(--max-width);
+  background: var(--color-glass-base);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  width: 90%;
+  max-width: 380px;
   max-height: 85vh;
+  margin: auto;
   overflow-y: auto;
-  animation: slideUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  padding-bottom: var(--safe-area-bottom);
+  animation: scaleIn 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding-bottom: 0;
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-5) var(--space-5) var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-3);
   position: sticky;
   top: 0;
-  background: var(--color-bg-secondary);
+  background: transparent;
   z-index: 1;
 }
 

@@ -93,7 +93,7 @@ export default function AdminItemsPage() {
                 background: item.active ? 'rgba(var(--color-primary-rgb), 0.12)' : 'var(--color-surface)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
               }}>
-                <Mountain size={22} style={{ color: item.active ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
+                <img src="/logo.png" alt="Logo" style={{ width: 22, height: 22, objectFit: 'contain', opacity: item.active ? 1 : 0.5 }} />
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
                 <button
@@ -126,7 +126,7 @@ export default function AdminItemsPage() {
 
       {items.length === 0 && (
         <div className="empty-state">
-          <Mountain style={{ width: 64, height: 64, opacity: 0.3 }} />
+          <img src="/logo.png" alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', opacity: 0.3 }} />
           <h3>No Items Yet</h3>
           <p>Add your first sand item to start receiving orders.</p>
         </div>

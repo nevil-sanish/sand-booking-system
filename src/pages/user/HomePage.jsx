@@ -48,7 +48,7 @@ export default function HomePage() {
           items.map(item => (
             <div key={item.id} className="card horizontal-item glass-panel hover-lift card-clickable" onClick={() => handleAddToCart(item)} style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <div className="item-card-icon" style={{ marginBottom: 'var(--space-2)' }}>
-                <Mountain />
+                <img src="/logo.png" alt="Logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
               </div>
               <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 600 }}>{item.name}</h3>
               <div>

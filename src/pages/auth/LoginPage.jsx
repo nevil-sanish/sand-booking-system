@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [notRegistered, setNotRegistered] = useState(false);
   const { login } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
@@ -33,7 +34,11 @@ export default function LoginPage() {
       toast.success('Welcome back!');
       navigate(user.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      toast.error(err.message);
+      if (err.message.includes('No account found')) {
+        setNotRegistered(true);
+      } else {
+        toast.error(err.message);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -44,62 +49,77 @@ export default function LoginPage() {
       <div className="auth-card glass-panel" style={{ padding: 'var(--space-6) var(--space-5)' }}>
         <div className="auth-logo">
           <div className="auth-logo-icon hover-lift" style={{ cursor: 'pointer' }}>
-            <Mountain />
+            <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <h1 style={{ marginBottom: 0 }}>mullonkal sand</h1>
           <p>Login Page</p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <div className="form-input-icon hover-lift">
-              <Phone />
-              <input
-                type="tel"
-                className="form-input glass"
-                placeholder="phone no"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                id="login-phone"
-                maxLength={10}
-              />
-            </div>
-            {errors.phone && <p className="form-error">{errors.phone}</p>}
+        {notRegistered ? (
+          <div className="text-center animate-fade-in mb-6">
+            <h2 style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-danger)', marginBottom: 'var(--space-2)' }}>User is not registered</h2>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-4)' }}>
+              It looks like you don't have an account with this number yet.
+            </p>
+            <Link to={`/register?phone=${phone}`} className="btn btn-primary btn-full hover-lift mb-4" style={{ borderRadius: 'var(--radius-full)' }}>
+              register now
+            </Link>
+            <button type="button" className="btn btn-ghost btn-sm mt-4 text-muted" onClick={() => setNotRegistered(false)}>
+              try another number
+            </button>
           </div>
-
-          <div className="form-group">
-            <div className="form-input-icon hover-lift">
-              <Lock />
-              <input
-                type="password"
-                className="form-input glass"
-                placeholder="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                id="login-password"
-              />
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <div className="form-input-icon hover-lift">
+                <Phone />
+                <input
+                  type="tel"
+                  className="form-input glass"
+                  placeholder="phone no"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  id="login-phone"
+                  maxLength={10}
+                />
+              </div>
+              {errors.phone && <p className="form-error">{errors.phone}</p>}
             </div>
-            {errors.password && <p className="form-error">{errors.password}</p>}
-          </div>
 
-          <p className="text-center text-muted mb-6" style={{ fontSize: '12px' }}>
-            forgotten the password <button type="button" onClick={() => alert('Please contact: admin@mullonkalsand.com')} style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>contact the admin</button>
-          </p>
+            <div className="form-group">
+              <div className="form-input-icon hover-lift">
+                <Lock />
+                <input
+                  type="password"
+                  className="form-input glass"
+                  placeholder="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  id="login-password"
+                />
+              </div>
+              {errors.password && <p className="form-error">{errors.password}</p>}
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary btn-lg btn-full hover-lift mb-6"
-            style={{ borderRadius: 'var(--radius-full)' }}
-            disabled={submitting}
-            id="login-submit"
-          >
-            {submitting ? (
-              <div className="spinner spinner-sm" />
-            ) : (
-              'sign in'
-            )}
-          </button>
-        </form>
+            <p className="text-center text-muted mb-6" style={{ fontSize: '12px' }}>
+              forgotten the password <button type="button" onClick={() => alert('Please contact: admin@mullonkalsand.com')} style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>contact the admin</button>
+            </p>
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg btn-full hover-lift mb-6"
+              style={{ borderRadius: 'var(--radius-full)' }}
+              disabled={submitting}
+              id="login-submit"
+            >
+              {submitting ? (
+                <div className="spinner spinner-sm" />
+              ) : (
+                'sign in'
+              )}
+            </button>
+          </form>
+        )}
 
         <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <p>
