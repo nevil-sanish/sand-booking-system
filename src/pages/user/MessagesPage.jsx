@@ -33,7 +33,7 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in app-shell-user" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <h1 className="page-title">Messages</h1>
 
       <div className="messages-list stagger-children">

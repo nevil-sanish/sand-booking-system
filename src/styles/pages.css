@@ -98,7 +98,7 @@
   background: rgba(15, 15, 26, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-glass-border);
   z-index: var(--z-sticky);
   display: flex;
   align-items: center;
@@ -110,7 +110,6 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: var(--max-width);
   margin: 0 auto;
 }
 
@@ -159,14 +158,15 @@
   right: 0;
   height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
   padding-bottom: var(--safe-area-bottom);
-  background: rgba(15, 15, 26, 0.92);
+  background: rgba(26, 26, 46, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-glass-border);
   z-index: var(--z-sticky);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
 }
 
 .bottom-nav-inner {
@@ -229,10 +229,28 @@
   padding: 0 4px;
 }
 
-/* ===== HOME PAGE ===== */
+/* ===== HOME PAGE (User) ===== */
+.horizontal-scroll {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-item {
+  min-width: 140px;
+  max-width: 200px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: var(--space-3);
 }
 
@@ -508,12 +526,113 @@
   min-height: 44px;
 }
 
+/* ===== ADMIN LAYOUT ===== */
+.admin-layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-glass-base);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--color-glass-border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  transition: transform var(--transition-bounce);
+}
+
+.admin-sidebar-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--color-glass-border);
+}
+
+.admin-sidebar-nav {
+  flex: 1;
+  padding: var(--space-4);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.admin-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.admin-sidebar-item:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.admin-sidebar-item.active {
+  background: rgba(212, 147, 13, 0.15);
+  color: var(--color-primary);
+  border-left: 3px solid var(--color-primary);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: var(--space-6);
+  transition: margin-left var(--transition-bounce);
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-main {
+    margin-left: 0;
+    padding: var(--space-4) var(--space-3);
+  }
+  .admin-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: calc(var(--z-sticky) - 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base);
+  }
+  .admin-drawer-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 /* ===== ADMIN DASHBOARD ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-3);
-  margin-bottom: var(--space-6);
 }
 
 .admin-section {

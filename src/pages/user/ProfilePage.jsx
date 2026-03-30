@@ -13,10 +13,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in app-shell-user">
       <h1 className="page-title">Profile</h1>
 
-      <div className="card" style={{ textAlign: 'center', padding: 'var(--space-8) var(--space-4)' }}>
+      <div className="card glass-panel" style={{ textAlign: 'center', padding: 'var(--space-8) var(--space-4)' }}>
         <div className="avatar avatar-lg" style={{ margin: '0 auto var(--space-4)' }}>
           {getInitials(user?.name)}
         </div>
@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
       <div style={{ marginTop: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
         <button
-          className="btn btn-secondary btn-full ripple"
+          className="btn btn-secondary btn-full hover-lift"
           onClick={() => navigate('/change-password')}
           id="change-password-link"
         >
@@ -43,7 +43,7 @@ export default function ProfilePage() {
           Change Password
         </button>
         <button
-          className="btn btn-danger btn-full ripple"
+          className="btn btn-danger btn-full hover-lift"
           onClick={handleLogout}
           id="profile-logout"
         >

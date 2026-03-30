@@ -40,25 +40,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page animate-fade-in">
-      <div className="auth-card">
+    <div className="auth-page animate-fade-in app-shell-user">
+      <div className="auth-card glass-panel" style={{ padding: 'var(--space-6) var(--space-5)' }}>
         <div className="auth-logo">
-          <div className="auth-logo-icon">
+          <div className="auth-logo-icon hover-lift" style={{ cursor: 'pointer' }}>
             <Mountain />
           </div>
-          <h1>{APP_NAME}</h1>
-          <p>Sign in to continue</p>
+          <h1 style={{ marginBottom: 0 }}>mullonkal sand</h1>
+          <p>Login Page</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Phone Number</label>
-            <div className="form-input-icon">
+            <div className="form-input-icon hover-lift">
               <Phone />
               <input
                 type="tel"
-                className="form-input"
-                placeholder="Enter your phone number"
+                className="form-input glass"
+                placeholder="phone no"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 id="login-phone"
@@ -69,13 +68,12 @@ export default function LoginPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
-            <div className="form-input-icon">
+            <div className="form-input-icon hover-lift">
               <Lock />
               <input
                 type="password"
-                className="form-input"
-                placeholder="Enter your password"
+                className="form-input glass"
+                placeholder="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 id="login-password"
@@ -84,28 +82,33 @@ export default function LoginPage() {
             {errors.password && <p className="form-error">{errors.password}</p>}
           </div>
 
+          <p className="text-center text-muted mb-6" style={{ fontSize: '12px' }}>
+            forgotten the password <button type="button" onClick={() => alert('Please contact: admin@mullonkalsand.com')} style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>contact the admin</button>
+          </p>
+
           <button
             type="submit"
-            className="btn btn-primary btn-lg btn-full ripple"
+            className="btn btn-primary btn-lg btn-full hover-lift mb-6"
+            style={{ borderRadius: 'var(--radius-full)' }}
             disabled={submitting}
             id="login-submit"
           >
             {submitting ? (
               <div className="spinner spinner-sm" />
             ) : (
-              <>
-                <LogIn size={20} />
-                Sign In
-              </>
+              'sign in'
             )}
           </button>
         </form>
 
-        <p className="auth-footer">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
-
-
+        <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <p>
+            dont have an account <Link to="/register">register</Link>
+          </p>
+          <button type="button" onClick={() => alert('Tutorial logic goes here.')} style={{ color: 'var(--color-text-secondary)', fontSize: '12px' }}>
+            learn how the app works
+          </button>
+        </div>
       </div>
     </div>
   );

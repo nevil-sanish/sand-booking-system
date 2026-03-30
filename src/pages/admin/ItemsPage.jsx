@@ -84,38 +84,41 @@ export default function AdminItemsPage() {
         </button>
       </div>
 
-      <div className="stagger-children">
+      <div className="dashboard-grid stagger-children">
         {items.map(item => (
-          <div key={item.id} className="card admin-item-card">
-            <div style={{
-              width: 44, height: 44, borderRadius: 'var(--radius-md)',
-              background: item.active ? 'rgba(var(--color-primary-rgb), 0.12)' : 'var(--color-surface)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-            }}>
-              <Mountain size={22} style={{ color: item.active ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
+          <div key={item.id} className="card admin-item-card glass-panel hover-lift" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: 'var(--space-5)' }}>
+            <div className="flex-between w-full" style={{ width: '100%', marginBottom: 'var(--space-3)' }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 'var(--radius-md)',
+                background: item.active ? 'rgba(var(--color-primary-rgb), 0.12)' : 'var(--color-surface)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+              }}>
+                <Mountain size={22} style={{ color: item.active ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
+              </div>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+                <button
+                  className="btn btn-ghost btn-icon btn-sm"
+                  onClick={() => openEditModal(item)}
+                  title="Edit"
+                  id={`edit-item-${item.id}`}
+                >
+                  <Edit2 size={18} />
+                </button>
+                <button
+                  className={`switch ${item.active ? 'switch-active' : ''}`}
+                  onClick={() => handleToggle(item)}
+                  title={item.active ? 'Disable' : 'Enable'}
+                  id={`toggle-item-${item.id}`}
+                />
+              </div>
             </div>
-            <div className="admin-item-info">
-              <p className="admin-item-name">{item.name}</p>
-              <p className="admin-item-price">{formatPrice(item.price)} / {item.unit || 'load'}</p>
-              <p className="admin-item-status">
-                {item.active ? '● Active' : '○ Disabled'}
+            
+            <div className="admin-item-info" style={{ width: '100%' }}>
+              <p className="admin-item-name" style={{ fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-1)' }}>{item.name}</p>
+              <p className="admin-item-price" style={{ fontSize: 'var(--font-size-xl)' }}>{formatPrice(item.price)} <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', fontWeight: 400 }}>/ {item.unit || 'load'}</span></p>
+              <p className="admin-item-status mt-4" style={{ display: 'inline-block', padding: '4px 12px', background: item.active ? 'rgba(52, 211, 153, 0.1)' : 'rgba(255,255,255,0.05)', color: item.active ? 'var(--color-success)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-full)' }}>
+                {item.active ? 'Active' : 'Disabled'}
               </p>
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-              <button
-                className="btn btn-ghost btn-icon btn-sm"
-                onClick={() => openEditModal(item)}
-                title="Edit"
-                id={`edit-item-${item.id}`}
-              >
-                <Edit2 size={18} />
-              </button>
-              <button
-                className={`switch ${item.active ? 'switch-active' : ''}`}
-                onClick={() => handleToggle(item)}
-                title={item.active ? 'Disable' : 'Enable'}
-                id={`toggle-item-${item.id}`}
-              />
             </div>
           </div>
         ))}

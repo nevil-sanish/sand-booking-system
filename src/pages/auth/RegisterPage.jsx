@@ -40,44 +40,45 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="auth-page animate-fade-in">
-        <div className="auth-card">
-          <div className="auth-success animate-scale-in">
-            <CheckCircle />
-            <h2>Registration Successful!</h2>
-            <p>
+      <div className="auth-page animate-fade-in app-shell-user">
+        <div className="auth-card glass-panel" style={{ padding: 'var(--space-6) var(--space-5)' }}>
+          <div className="auth-success animate-scale-in text-center">
+            <CheckCircle style={{ width: 64, height: 64, color: 'var(--color-success)', margin: '0 auto var(--space-4)' }} />
+            <h2 style={{ fontSize: 'var(--font-size-xl)' }}>Registration Successful!</h2>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-2)' }}>
               Your account is pending approval. The admin will review your request
-              and set your password. You'll be able to log in once approved.
+              and set your password.
             </p>
           </div>
-          <p className="auth-footer">
-            Already approved? <Link to="/login">Sign In</Link>
-          </p>
+          <div className="auth-footer mt-6" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <p>
+              Already approved? <Link to="/login">Sign In</Link>
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="auth-page animate-fade-in">
-      <div className="auth-card">
+    <div className="auth-page animate-fade-in app-shell-user">
+      <div className="auth-card glass-panel" style={{ padding: 'var(--space-6) var(--space-5)' }}>
         <div className="auth-logo">
-          <div className="auth-logo-icon">
+          <div className="auth-logo-icon hover-lift" style={{ cursor: 'pointer' }}>
             <Mountain />
           </div>
-          <h1>{APP_NAME}</h1>
-          <p>Create your account</p>
+          <h1 style={{ marginBottom: 0 }}>mullonkal sand</h1>
+          <p>Registration Page</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Full Name</label>
-            <div className="form-input-icon">
+            <div className="form-input-icon hover-lift">
               <UserIcon />
               <input
                 type="text"
-                className="form-input"
-                placeholder="Enter your full name"
+                className="form-input glass"
+                placeholder="name of the user"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 id="register-name"
@@ -87,13 +88,12 @@ export default function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Phone Number</label>
-            <div className="form-input-icon">
+            <div className="form-input-icon hover-lift">
               <Phone />
               <input
                 type="tel"
-                className="form-input"
-                placeholder="Enter your phone number"
+                className="form-input glass"
+                placeholder="phone number of the user"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 id="register-phone"
@@ -105,21 +105,28 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            className="btn btn-primary btn-lg btn-full ripple"
+            className="btn btn-primary btn-lg btn-full hover-lift mb-6"
+            style={{ borderRadius: 'var(--radius-full)' }}
             disabled={submitting}
             id="register-submit"
           >
             {submitting ? (
               <div className="spinner spinner-sm" />
             ) : (
-              'Create Account'
+              'create an account'
             )}
           </button>
         </form>
 
-        <p className="auth-footer">
-          Already have an account? <Link to="/login">Sign In</Link>
-        </p>
+        <div className="auth-footer" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <p>
+            already have account <Link to="/login">sign in</Link>
+          </p>
+          
+          <button type="button" onClick={() => alert('Tutorial logic goes here.')} style={{ color: 'var(--color-text-secondary)', fontSize: '12px' }}>
+            learn how the app works
+          </button>
+        </div>
       </div>
     </div>
   );

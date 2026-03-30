@@ -32,40 +32,42 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="page-title">Dashboard</h1>
+      <h1 className="page-title">Dashboard Overview</h1>
 
-      <div className="stats-grid stagger-children">
-        {stats.map((stat, i) => (
-          <div key={i} className="card stat-card">
-            <stat.icon size={24} style={{ color: stat.color, marginBottom: 'var(--space-2)' }} />
-            <div className="stat-value">{stat.value}</div>
-            <div className="stat-label">{stat.label}</div>
-          </div>
-        ))}
-      </div>
+      <div className="dashboard-grid stagger-children">
+        <div className="card card-clickable glass-panel hover-lift" onClick={() => navigate('/admin/orders')} style={{ minHeight: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Package size={48} style={{ color: 'var(--color-primary)', marginBottom: 'var(--space-4)' }} />
+          <h2 style={{ fontSize: 'var(--font-size-xl)' }}>STATUS</h2>
+          <p className="text-muted text-center mt-2">
+            {pendingOrders.length} Pending<br />
+            {confirmedOrders.length} Active
+          </p>
+        </div>
 
-      <h2 className="section-title">Quick Actions</h2>
-      <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-        {quickActions.map((action, i) => (
-          <div
-            key={i}
-            className="card card-clickable"
-            onClick={() => navigate(action.path)}
-            style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)' }}
-          >
-            <div style={{
-              width: 44, height: 44, borderRadius: 'var(--radius-md)',
-              background: 'rgba(var(--color-primary-rgb), 0.12)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-            }}>
-              <action.icon size={22} style={{ color: 'var(--color-primary)' }} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: 600 }}>{action.label}</p>
-              <p className="text-muted">{action.desc}</p>
-            </div>
-          </div>
-        ))}
+        <div className="card card-clickable glass-panel hover-lift" onClick={() => navigate('/admin/items')} style={{ minHeight: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Layers size={48} style={{ color: 'var(--color-info)', marginBottom: 'var(--space-4)' }} />
+          <h2 style={{ fontSize: 'var(--font-size-xl)' }}>INVENTORY</h2>
+          <p className="text-muted text-center mt-2">
+            Manage Sand Items & Pricing
+          </p>
+        </div>
+
+        <div className="card card-clickable glass-panel hover-lift" onClick={() => navigate('/admin/messages')} style={{ minHeight: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <MessageSquare size={48} style={{ color: 'var(--color-success)', marginBottom: 'var(--space-4)' }} />
+          <h2 style={{ fontSize: 'var(--font-size-xl)' }}>CHAT</h2>
+          <p className="text-muted text-center mt-2">
+            Messages & Enquiries
+          </p>
+        </div>
+
+        <div className="card card-clickable glass-panel hover-lift" onClick={() => navigate('/admin/users')} style={{ minHeight: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Users size={48} style={{ color: 'var(--color-warning)', marginBottom: 'var(--space-4)' }} />
+          <h2 style={{ fontSize: 'var(--font-size-xl)' }}>USERS</h2>
+          <p className="text-muted text-center mt-2">
+            {pendingUsers.length} Pending Approvals<br />
+            {users.length} Total Users
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ import ChangePasswordPage from './pages/auth/ChangePasswordPage';
 // User Pages
 import HomePage from './pages/user/HomePage';
 import CartPage from './pages/user/CartPage';
-import LocationPage from './pages/user/LocationPage';
 import OrderSummaryPage from './pages/user/OrderSummaryPage';
 import UserOrdersPage from './pages/user/OrdersPage';
 import UserMessagesPage from './pages/user/MessagesPage';
@@ -26,6 +25,8 @@ import AdminOrdersPage from './pages/admin/OrdersPage';
 import AdminItemsPage from './pages/admin/ItemsPage';
 import AdminUsersPage from './pages/admin/UsersPage';
 import AdminMessagesPage from './pages/admin/MessagesPage';
+import AdminNotificationsPage from './pages/admin/NotificationsPage';
+import EditContactPage from './pages/admin/EditContactPage';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading, isAdmin } = useAuth();
@@ -74,7 +75,6 @@ function AppRoutes() {
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<CartPage />} />
-        <Route path="location" element={<LocationPage />} />
         <Route path="order-summary" element={<OrderSummaryPage />} />
         <Route path="orders" element={<UserOrdersPage />} />
         <Route path="messages" element={<UserMessagesPage />} />
@@ -89,6 +89,8 @@ function AppRoutes() {
         <Route path="items" element={<AdminItemsPage />} />
         <Route path="users" element={<AdminUsersPage />} />
         <Route path="messages" element={<AdminMessagesPage />} />
+        <Route path="notifications" element={<AdminNotificationsPage />} />
+        <Route path="settings" element={<EditContactPage />} />
       </Route>
 
       {/* Catch-all */}

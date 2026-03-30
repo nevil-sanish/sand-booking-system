@@ -13,6 +13,7 @@ export const USER_ROLES = {
 export const USER_STATUSES = {
   PENDING: 'pending',
   APPROVED: 'approved',
+  REJECTED: 'rejected',
 };
 
 export const MESSAGE_STATUSES = {
@@ -24,8 +25,7 @@ export const MESSAGE_STATUSES = {
 export const APP_NAME = 'Mullonkal Sand';
 
 export const NAV_ITEMS_USER = [
-  { path: '/', label: 'Home', icon: 'Home' },
-  { path: '/orders', label: 'Orders', icon: 'Package' },
+  { path: '/', label: 'Order', icon: 'Package' },
   { path: '/messages', label: 'Messages', icon: 'MessageSquare' },
   { path: '/profile', label: 'Profile', icon: 'User' },
 ];

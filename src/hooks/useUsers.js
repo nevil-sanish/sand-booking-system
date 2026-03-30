@@ -35,6 +35,13 @@ export function useUsers() {
     });
   };
 
+  const rejectUser = async (userId) => {
+    await updateDoc(doc(db, 'users', userId), {
+      status: USER_STATUSES.REJECTED,
+      password: '',
+    });
+  };
+
   const flagUser = async (userId, flagged) => {
     await updateDoc(doc(db, 'users', userId), { flagged });
   };
@@ -51,13 +58,19 @@ export function useUsers() {
     return users.filter(u => u.status === USER_STATUSES.APPROVED);
   };
 
+  const getRejectedUsers = () => {
+    return users.filter(u => u.status === USER_STATUSES.REJECTED);
+  };
+
   return {
     users,
     loading,
     approveUser,
+    rejectUser,
     flagUser,
     setUserPassword,
     getPendingUsers,
     getApprovedUsers,
+    getRejectedUsers,
   };
 }

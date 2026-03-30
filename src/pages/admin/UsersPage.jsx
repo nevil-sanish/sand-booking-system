@@ -7,11 +7,11 @@ import EmptyState from '../../components/common/EmptyState';
 import { getInitials, formatPhone } from '../../utils/formatters';
 import { validatePassword } from '../../utils/validators';
 import {
-  Users, UserCheck, AlertTriangle, Flag, FlagOff, Lock, Shield, Save
+  Users, UserCheck, UserX, AlertTriangle, Flag, FlagOff, Lock, Shield, Save
 } from 'lucide-react';
 
 export default function AdminUsersPage() {
-  const { users, loading, approveUser, flagUser, setUserPassword, getPendingUsers, getApprovedUsers } = useUsers();
+  const { users, loading, approveUser, rejectUser, flagUser, setUserPassword, getPendingUsers, getApprovedUsers, getRejectedUsers } = useUsers();
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('pending');
   const [passwordModal, setPasswordModal] = useState(null);
@@ -82,7 +82,12 @@ export default function AdminUsersPage() {
 
   const pendingUsers = getPendingUsers();
   const approvedUsers = getApprovedUsers();
-  const displayUsers = activeTab === 'pending' ? pendingUsers : approvedUsers;
+  const rejectedUsers = getRejectedUsers();
+  
+  let displayUsers = [];
+  if (activeTab === 'pending') displayUsers = pendingUsers;
+  else if (activeTab === 'approved') displayUsers = approvedUsers;
+  else if (activeTab === 'rejected') displayUsers = rejectedUsers;
 
   return (
     <div className="animate-fade-in">
@@ -103,15 +108,24 @@ export default function AdminUsersPage() {
           Approved
           <span className="tab-count">{approvedUsers.length}</span>
         </button>
+        <button
+          className={`tab ${activeTab === 'rejected' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('rejected')}
+        >
+          Rejected
+          <span className="tab-count">{rejectedUsers.length}</span>
+        </button>
       </div>
 
       {displayUsers.length === 0 ? (
         <EmptyState
           icon={Users}
-          title={activeTab === 'pending' ? 'No Pending Users' : 'No Approved Users'}
+          title={activeTab === 'pending' ? 'No Pending Users' : activeTab === 'approved' ? 'No Approved Users' : 'No Rejected Users'}
           description={activeTab === 'pending'
             ? 'New user registrations will appear here.'
-            : 'Approved users will appear here.'
+            : activeTab === 'approved'
+              ? 'Approved users will appear here.'
+              : 'Rejected users will appear here.'
           }
         />
       ) : (
@@ -137,15 +151,24 @@ export default function AdminUsersPage() {
               </div>
               <div className="admin-user-actions">
                 {u.status === 'pending' ? (
-                  <button
-                    className="btn btn-success btn-sm ripple"
-                    onClick={() => handleApprove(u)}
-                    id={`approve-${u.id}`}
-                  >
-                    <UserCheck size={14} />
-                    Approve
-                  </button>
-                ) : (
+                  <>
+                    <button
+                      className="btn btn-danger btn-sm ripple"
+                      onClick={() => handleReject(u)}
+                    >
+                      <UserX size={14} />
+                      Reject
+                    </button>
+                    <button
+                      className="btn btn-success btn-sm ripple"
+                      onClick={() => handleApprove(u)}
+                      id={`approve-${u.id}`}
+                    >
+                      <UserCheck size={14} />
+                      Approve
+                    </button>
+                  </>
+                ) : u.status === 'approved' ? (
                   <>
                     <button
                       className={`btn btn-sm ripple ${u.flagged ? 'btn-secondary' : 'btn-ghost'}`}
@@ -165,6 +188,14 @@ export default function AdminUsersPage() {
                       <Lock size={14} />
                     </button>
                   </>
+                ) : (
+                  <button
+                    className="btn btn-success btn-sm ripple"
+                    onClick={() => handleApprove(u)}
+                  >
+                    <UserCheck size={14} />
+                    Restore
+                  </button>
                 )}
               </div>
             </div>

@@ -78,15 +78,15 @@
 }
 
 .animate-slide-up {
-  animation: slideUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideUp var(--transition-bounce);
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 300ms ease;
+  animation: slideInRight var(--transition-spring);
 }
 
 .animate-scale-in {
-  animation: scaleIn 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: scaleIn var(--transition-bounce);
 }
 
 .animate-pulse {
@@ -95,7 +95,7 @@
 
 /* ===== STAGGER ANIMATION ===== */
 .stagger-children > * {
-  animation: slideUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: slideUp var(--transition-bounce) both;
 }
 
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
@@ -111,7 +111,7 @@
 
 /* ===== PAGE TRANSITION ===== */
 .page-enter {
-  animation: slideUp 300ms ease;
+  animation: slideUp var(--transition-spring);
 }
 
 /* ===== RIPPLE EFFECT ===== */

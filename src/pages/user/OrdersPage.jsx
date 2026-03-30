@@ -41,7 +41,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in app-shell-user">
       <h1 className="page-title">My Orders</h1>
 
       <div className="stagger-children">
