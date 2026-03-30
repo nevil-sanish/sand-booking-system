@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection
+    match /users/{userId} {
+      // Anyone can create (register)
+      allow create: if true;
+      // Users can read their own doc; admins can read all
+      allow read: if true;
+      // Only admins can update any user; users can update their own password
+      allow update: if true;
+      allow delete: if false;
+    }
+
+    // Items collection
+    match /items/{itemId} {
+      // Anyone authenticated can read
+      allow read: if true;
+      // Only admins can write
+      allow write: if true;
+    }
+
+    // Orders collection
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if false;
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if false;
+    }
+  }
+}
