@@ -492,14 +492,17 @@ body > *,
 
 .cbdc-messages-list {
   width: 40%;
+  flex-shrink: 0;
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
+  height: 100%; /* fills the pane so it scrolls within a fixed area */
 }
 
 .cbdc-messages-detail {
   width: 60%;
   padding: var(--space-4);
   overflow-y: auto;
+  height: 100%; /* fills the pane */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -526,6 +529,11 @@ body > *,
     grid-template-columns: 1fr;
     height: auto;
     overflow: visible;
+  }
+  /* Fixed height on mobile so the list never grows with user count */
+  .cbdc-messages-pane {
+    height: 300px;
+    flex-shrink: 0;
   }
 }
 

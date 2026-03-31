@@ -3,8 +3,8 @@ import { useOrders } from '../../hooks/useOrders';
 import { useToast } from '../../contexts/ToastContext';
 import Spinner from '../../components/common/Spinner';
 import EmptyState from '../../components/common/EmptyState';
-import { formatPrice, formatRelativeTime } from '../../utils/formatters';
-import { Package, MapPin, Clock, XCircle, ExternalLink } from 'lucide-react';
+import { formatPrice, formatRelativeTime, formatDateTime } from '../../utils/formatters';
+import { Package, MapPin, Clock, XCircle, ExternalLink, CalendarDays } from 'lucide-react';
 
 const statusLabels = {
   pending: 'Pending',
@@ -50,7 +50,13 @@ export default function OrdersPage() {
             <div className="order-card-header">
               <div>
                 <p className="order-card-id">#{order.id.slice(-6).toUpperCase()}</p>
-                <span className="text-muted">{order.createdAt ? formatRelativeTime(order.createdAt) : ''}</span>
+                {/* Non-editable created-on date */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                  <CalendarDays size={11} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
+                    {order.createdAt ? formatDateTime(order.createdAt) : 'Date unavailable'}
+                  </span>
+                </div>
               </div>
               <span className={`badge badge-${order.status}`}>
                 {statusLabels[order.status]}

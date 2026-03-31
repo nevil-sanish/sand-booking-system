@@ -4,10 +4,10 @@ import { useToast } from '../../contexts/ToastContext';
 import Spinner from '../../components/common/Spinner';
 import EmptyState from '../../components/common/EmptyState';
 import { ORDER_STATUSES } from '../../utils/constants';
-import { formatPrice, formatRelativeTime, formatPhone } from '../../utils/formatters';
+import { formatPrice, formatRelativeTime, formatDateTime, formatPhone } from '../../utils/formatters';
 import {
   Package, MapPin, Clock, Phone as PhoneIcon,
-  CheckCircle, XCircle, Check, ExternalLink, User, Trash2
+  CheckCircle, XCircle, Check, ExternalLink, User, Trash2, CalendarDays
 } from 'lucide-react';
 
 const tabs = [
@@ -74,6 +74,13 @@ export default function AdminOrdersPage() {
                     {order.userName || 'Unknown'}
                   </p>
                   <p className="order-card-id">#{order.id.slice(-6).toUpperCase()}</p>
+                  {/* Non-editable created-on date */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                    <CalendarDays size={11} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
+                      {order.createdAt ? formatDateTime(order.createdAt) : 'Date unavailable'}
+                    </span>
+                  </div>
                 </div>
                 <span className={`badge badge-${order.status}`}>
                   {order.status}
@@ -107,11 +114,6 @@ export default function AdminOrdersPage() {
                   <Clock size={14} />
                   {order.dateNeeded ? `${order.dateNeeded} ` : ''}{order.timeNeeded || 'Anytime'}
                 </span>
-                {order.createdAt && (
-                  <span className="order-card-meta-item">
-                    {formatRelativeTime(order.createdAt)}
-                  </span>
-                )}
                 {order.location?.address && (
                   <a
                     className="order-card-meta-item"

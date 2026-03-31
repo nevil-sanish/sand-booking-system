@@ -25,7 +25,7 @@ export default function AdminItemsPage() {
 
   const openEditModal = (item) => {
     setEditing(item);
-    setForm({ name: item.name, price: String(item.price), unit: item.unit || 'load' });
+    setForm({ name: item.name, price: item.price != null ? String(item.price) : '', unit: item.unit || 'load' });
     setErrors({});
     setModalOpen(true);
   };
@@ -39,18 +39,20 @@ export default function AdminItemsPage() {
     }
 
     setSubmitting(true);
+    // Price is optional — save null when field is blank
+    const priceValue = form.price !== '' ? Number(form.price) : null;
     try {
       if (editing) {
         await updateItem(editing.id, {
           name: form.name.trim(),
-          price: Number(form.price),
+          price: priceValue,
           unit: form.unit,
         });
         toast.success('Item updated');
       } else {
         await addItem({
           name: form.name.trim(),
-          price: Number(form.price),
+          price: priceValue,
           unit: form.unit,
         });
         toast.success('Item added');
@@ -135,7 +137,12 @@ export default function AdminItemsPage() {
             
             <div className="admin-item-info" style={{ width: '100%' }}>
               <p className="admin-item-name" style={{ fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-1)' }}>{item.name}</p>
-              <p className="admin-item-price" style={{ fontSize: 'var(--font-size-xl)' }}>{formatPrice(item.price)} <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', fontWeight: 400 }}>/ {item.unit || 'load'}</span></p>
+              <p className="admin-item-price" style={{ fontSize: 'var(--font-size-xl)' }}>
+                {item.price != null && item.price > 0
+                  ? <>{formatPrice(item.price)} <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', fontWeight: 400 }}>/ {item.unit || 'load'}</span></>
+                  : <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', fontWeight: 400 }}>Price not set</span>
+                }
+              </p>
               <p className="admin-item-status mt-4" style={{ display: 'inline-block', padding: '4px 12px', background: item.active ? 'rgba(52, 211, 153, 0.1)' : 'rgba(255,255,255,0.05)', color: item.active ? 'var(--color-success)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-full)' }}>
                 {item.active ? 'Active' : 'Disabled'}
               </p>
@@ -187,7 +194,9 @@ export default function AdminItemsPage() {
           {errors.name && <p className="form-error">{errors.name}</p>}
         </div>
         <div className="form-group">
-          <label className="form-label">Price (₹)</label>
+          <label className="form-label">
+            Price (₹) <span style={{ color: 'var(--color-text-muted)', fontWeight: 400, fontSize: '0.75em' }}>(optional)</span>
+          </label>
           <input
             type="number"
             className="form-input"

@@ -20,9 +20,10 @@ export function validatePassword(password) {
 }
 
 export function validatePrice(price) {
-  if (price === '' || price === undefined || price === null) return 'Price is required';
+  // Price is optional — skip when blank
+  if (price === '' || price === undefined || price === null) return null;
   const num = Number(price);
-  if (isNaN(num) || num <= 0) return 'Price must be a positive number';
+  if (isNaN(num) || num < 0) return 'Price must be a valid positive number';
   return null;
 }
 

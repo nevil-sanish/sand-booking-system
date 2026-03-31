@@ -191,7 +191,9 @@ export default function DashboardPage() {
                     <Layers size={24} style={{ color: 'var(--color-primary)' }} />
                   </div>
                   <p style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textAlign: 'center' }}>{item.name}</p>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-xs)', textAlign: 'center' }}>{formatPrice(item.price)}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-xs)', textAlign: 'center' }}>
+                    {item.price != null && item.price > 0 ? formatPrice(item.price) : '—'}
+                  </p>
                 </div>
               ))}
             </div>

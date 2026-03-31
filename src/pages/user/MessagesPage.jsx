@@ -28,8 +28,15 @@ export default function MessagesPage() {
     }
   };
 
-  // Mark admin messages as seen when this page is open
+  // Clear BottomNav badge via localStorage (reliable even if Firestore rules block user writes)
+  // Also attempt Firestore status update as a best-effort
   useEffect(() => {
+    if (loading || !user?.id) return;
+    // Stamp the current time so BottomNav knows which messages are "seen"
+    const seenKey = `msgs_seen_at_${user.id}`;
+    localStorage.setItem(seenKey, String(Date.now()));
+    window.dispatchEvent(new Event('msgs-seen'));
+    // Best-effort Firestore update
     messages.forEach(msg => {
       if (msg.senderId === 'admin' && msg.status !== MESSAGE_STATUSES.SEEN) {
         markAsSeen(msg.id);
