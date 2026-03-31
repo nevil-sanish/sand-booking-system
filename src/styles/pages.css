@@ -42,10 +42,7 @@
 .auth-logo h1 {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-primary-dark);
 }
 
 .auth-logo p {
@@ -510,20 +507,26 @@
 .message-input-bar {
   position: fixed;
   bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
-  left: 0;
-  right: 0;
-  padding: var(--space-3) var(--space-4);
-  background: rgba(15, 15, 26, 0.92);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px; /* Aligns with user shell width */
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-glass-base);
   backdrop-filter: blur(20px);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-glass-border);
   display: flex;
   gap: var(--space-2);
+  align-items: center;
   z-index: var(--z-sticky);
 }
 
 .message-input-bar .form-input {
   flex: 1;
-  min-height: 44px;
+  min-height: 38px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  background: var(--color-surface);
 }
 
 /* ===== ADMIN LAYOUT ===== */

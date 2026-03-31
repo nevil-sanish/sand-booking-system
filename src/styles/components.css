@@ -460,8 +460,8 @@
 .tabs {
   display: flex;
   gap: var(--space-1);
-  background: rgba(26, 26, 46, 0.8);
-  border: 1px solid var(--color-glass-border);
+  background: rgba(0, 0, 0, 0.5); /* Much darker to contrast the tabs */
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-full);
   padding: 4px;
   overflow-x: auto;
@@ -478,7 +478,7 @@
   padding: var(--space-2) var(--space-4);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.6); /* Readable grey/white instead of muddy brown */
   border-radius: var(--radius-full);
   transition: all var(--transition-spring);
   text-align: center;
@@ -489,16 +489,16 @@
 
 @media (hover: hover) {
   .tab:hover:not(.tab-active) {
-    color: var(--color-text);
-    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
 .tab-active {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-primary);
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .tab-count {

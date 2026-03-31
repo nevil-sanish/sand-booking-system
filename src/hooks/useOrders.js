@@ -16,8 +16,7 @@ export function useOrders(userId = null, isAdmin = false) {
     } else if (userId) {
       q = query(
         collection(db, 'orders'),
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', userId)
       );
     } else {
       setLoading(false);
@@ -28,7 +27,11 @@ export function useOrders(userId = null, isAdmin = false) {
       const data = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })).sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return timeB - timeA;
+      });
       setOrders(data);
       setLoading(false);
     }, (error) => {

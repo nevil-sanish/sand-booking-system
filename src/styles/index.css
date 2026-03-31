@@ -218,19 +218,25 @@ ul, ol {
 /* ===== UTILITY CLASSES & SHELLS ===== */
 .app-shell-user {
   width: 100%;
+  max-width: 600px;
   margin: 0 auto;
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-bg);
+  box-shadow: 0 0 50px rgba(0,0,0,0.1);
 }
 
 /* The admin shell is fluid */
 .app-shell-admin {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
+  background: var(--color-bg);
+  box-shadow: 0 0 50px rgba(0,0,0,0.1);
 }
 
 .container {

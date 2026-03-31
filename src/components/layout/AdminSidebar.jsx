@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { db } from '../../services/firebase';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { APP_NAME } from '../../utils/constants';
 import { 
   Mountain, 
@@ -13,15 +15,43 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+  return (
+    <button
+      className="btn btn-ghost btn-full flex-between hover-lift"
+      onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+    >
+      <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+      </span>
+    </button>
+  );
+}
 
 export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { unreadCount } = useNotifications();
+  const [unreadFeedback, setUnreadFeedback] = useState(0);
+
+  useEffect(() => {
+    const q = query(collection(db, 'feedback'), where('read', '==', false));
+    const unsub = onSnapshot(q, (snap) => setUnreadFeedback(snap.size));
+    return () => unsub();
+  }, []);
 
   // Close sidebar on mobile when route changes
   useEffect(() => {
@@ -40,6 +70,7 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
     { path: '/admin/items', icon: <Tag size={20} />, label: 'Pricing (Items)' },
     { path: '/admin/users', icon: <Users size={20} />, label: 'Users' },
     { path: '/admin/messages', icon: <MessageSquare size={20} />, label: 'Messages' },
+    { path: '/admin/feedback', icon: <MessageSquare size={20} />, label: 'Feedback' },
     { path: '/admin/settings', icon: <Settings size={20} />, label: 'Edit Contact Info' },
   ];
 
@@ -80,13 +111,17 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
                 {item.label === 'Notifications' && unreadCount > 0 && (
                   <span className="nav-badge" style={{ top: -4, right: -4 }}>{unreadCount}</span>
                 )}
+                {item.label === 'Feedback' && unreadFeedback > 0 && (
+                  <span className="nav-badge" style={{ top: -4, right: -4 }}>{unreadFeedback}</span>
+                )}
               </div>
               <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
 
-        <div className="p-4" style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--color-glass-border)' }}>
+        <div className="p-4" style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--color-glass-border)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <ThemeToggle />
           <button 
             className="btn btn-ghost btn-full flex-between hover-lift" 
             onClick={handleLogout}

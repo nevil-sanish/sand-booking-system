@@ -7,7 +7,7 @@ import EmptyState from '../../components/common/EmptyState';
 import { getInitials, formatPhone } from '../../utils/formatters';
 import { validatePassword } from '../../utils/validators';
 import {
-  Users, UserCheck, UserX, AlertTriangle, Flag, FlagOff, Lock, Shield, Save, Eye, EyeOff, Trash2, Ban
+  Users, UserCheck, UserX, AlertTriangle, Flag, FlagOff, Lock, Shield, Save, Eye, EyeOff, Trash2, Ban, Phone as PhoneIcon
 } from 'lucide-react';
 
 export default function AdminUsersPage() {
@@ -159,7 +159,14 @@ export default function AdminUsersPage() {
                         <AlertTriangle size={14} style={{ color: 'var(--color-warning)' }} />
                       )}
                     </p>
-                    <p className="admin-user-phone text-muted mt-1">{formatPhone(u.phone)}</p>
+                    <p className="admin-user-phone text-muted mt-1" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                      <a href={`tel:${u.phone}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {formatPhone(u.phone)}
+                      </a>
+                      <a href={`tel:${u.phone}`} className="btn btn-sm" style={{ padding: '2px 6px', background: 'var(--color-success-bg)', color: 'var(--color-success)', borderRadius: 'var(--radius-sm)', display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px' }}>
+                        <PhoneIcon size={12} /> Call
+                      </a>
+                    </p>
                     {u.status === 'approved' && u.password && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>

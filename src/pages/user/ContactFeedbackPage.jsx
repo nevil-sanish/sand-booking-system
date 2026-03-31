@@ -68,12 +68,17 @@ export default function ContactFeedbackPage() {
         {contactInfo ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
             {contactInfo.phone && (
-              <a href={`tel:${contactInfo.phone}`} className="card glass-panel flex-between card-clickable" style={{ padding: 'var(--space-3)', color: 'var(--color-text)' }}>
+              <a href={`tel:${contactInfo.phone}`} className="card glass-panel card-clickable" style={{ padding: 'var(--space-3)', color: 'var(--color-text)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                   <Phone size={16} className="text-muted" />
                   <span style={{ fontWeight: 600 }}>Phone</span>
                 </div>
-                <span style={{ color: 'var(--color-primary)' }}>{contactInfo.phone}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <span style={{ color: 'var(--color-primary)' }}>{contactInfo.phone}</span>
+                  <span style={{ padding: '2px 8px', background: 'var(--color-success-bg)', color: 'var(--color-success)', borderRadius: 'var(--radius-sm)', fontSize: '11px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                    <Phone size={10} /> Call
+                  </span>
+                </div>
               </a>
             )}
             {contactInfo.email && (

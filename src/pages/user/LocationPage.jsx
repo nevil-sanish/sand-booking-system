@@ -36,6 +36,10 @@ export default function LocationPage() {
   // Default center (Kerala, India)
   const defaultCenter = [10.0, 76.3];
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
   useEffect(() => {
     if (position) {
       reverseGeocode(position[0], position[1]);
@@ -54,6 +58,36 @@ export default function LocationPage() {
       setAddress(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
     } finally {
       setLoadingAddress(false);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+    
+    setIsSearching(true);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+      const data = await res.json();
+      setSearchResults(data);
+    } catch {
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSelectResult = (result) => {
+    const newPos = [parseFloat(result.lat), parseFloat(result.lon)];
+    setPosition(newPos);
+    setSearchQuery(result.display_name);
+    setSearchResults([]);
+    if (mapRef.current) {
+      mapRef.current.flyTo(newPos, 15);
     }
   };
 
@@ -82,18 +116,15 @@ export default function LocationPage() {
   };
 
   const handleProceed = () => {
-    if (!position) {
-      toast.warning('Please select a delivery location');
-      return;
+    if (position) {
+      sessionStorage.setItem('orderLocation', JSON.stringify({
+        lat: position[0],
+        lng: position[1],
+        address,
+      }));
+    } else {
+      sessionStorage.removeItem('orderLocation');
     }
-
-    // Store location in session
-    sessionStorage.setItem('orderLocation', JSON.stringify({
-      lat: position[0],
-      lng: position[1],
-      address,
-    }));
-
     navigate('/order-summary');
   };
 
@@ -102,11 +133,38 @@ export default function LocationPage() {
       <h1 className="page-title">Delivery Location</h1>
       <p className="text-muted mb-4">Tap on the map or use GPS to set location</p>
 
-      <div className="location-actions">
+      <div className="location-actions" style={{ flexDirection: 'column' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Search for an address..."
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+          {searchResults.length > 0 && (
+            <ul style={{
+              position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--color-bg)',
+              zIndex: 1000, border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+              maxHeight: '200px', overflowY: 'auto', boxShadow: 'var(--shadow-md)', listStyle: 'none', padding: 0, margin: '4px 0 0'
+            }}>
+              {searchResults.map(res => (
+                <li
+                  key={res.place_id}
+                  onClick={() => handleSelectResult(res)}
+                  style={{ padding: 'var(--space-2) var(--space-3)', cursor: 'pointer', borderBottom: '1px solid var(--color-border)', fontSize: 'var(--font-size-sm)' }}
+                >
+                  {res.display_name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <button
           className="btn btn-secondary btn-full ripple"
           onClick={handleUseGPS}
           disabled={loadingGPS}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           id="use-gps-btn"
         >
           {loadingGPS ? (
@@ -114,7 +172,7 @@ export default function LocationPage() {
           ) : (
             <>
               <Navigation size={18} />
-              Use My Location
+              Use My Current Location
             </>
           )}
         </button>
@@ -149,15 +207,24 @@ export default function LocationPage() {
         </div>
       )}
 
-      <button
-        className="btn btn-primary btn-lg btn-full ripple mt-4"
-        onClick={handleProceed}
-        disabled={!position}
-        id="proceed-to-summary"
-      >
-        <ArrowRight size={20} />
-        Review Order
-      </button>
+      <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-4)' }}>
+        <button
+          className="btn btn-secondary btn-full ripple"
+          onClick={handleProceed}
+          id="skip-location"
+        >
+          Skip Location
+        </button>
+        <button
+          className="btn btn-primary btn-full ripple"
+          onClick={handleProceed}
+          disabled={!position}
+          id="proceed-to-summary"
+        >
+          <ArrowRight size={20} />
+          Use Selected
+        </button>
+      </div>
     </div>
   );
 }

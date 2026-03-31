@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
@@ -5,6 +6,7 @@ import { ToastProvider } from './contexts/ToastContext';
 
 import Layout from './components/layout/Layout';
 import Spinner from './components/common/Spinner';
+import SplashScreen from './components/common/SplashScreen';
 
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
@@ -104,6 +106,21 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Show splash only once per browser session
+    if (sessionStorage.getItem('splashShown')) return false;
+    return true;
+  });
+
+  const handleSplashComplete = useCallback(() => {
+    sessionStorage.setItem('splashShown', '1');
+    setShowSplash(false);
+  }, []);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
   return (
     <BrowserRouter>
       <ToastProvider>

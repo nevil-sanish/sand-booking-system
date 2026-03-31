@@ -12,11 +12,23 @@ export default function DashboardPage() {
   const { orders, loading: ordersLoading } = useOrders(null, true);
   const { users, loading: usersLoading, getPendingUsers, getApprovedUsers } = useUsers();
   const { items, loading: itemsLoading } = useItems(true);
-  const { getMessagesByUser, loading: msgsLoading } = useMessages(null, true);
+  const { getMessagesByUser, sendMessage, loading: msgsLoading } = useMessages(null, true);
   const navigate = useNavigate();
 
   const [ordersTab, setOrdersTab] = useState('pending');
   const [selectedChatUser, setSelectedChatUser] = useState(null);
+  const [msgText, setMsgText] = useState('');
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!msgText.trim() || !selectedChatUser) return;
+    try {
+      await sendMessage(selectedChatUser.id, msgText, 'admin');
+      setMsgText('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (ordersLoading || usersLoading || itemsLoading || msgsLoading) {
     return <Spinner text="Loading dashboard..." />;
@@ -149,6 +161,19 @@ export default function DashboardPage() {
                       </div>
                     ))}
                   </div>
+                  <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-3)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--color-border)' }}>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="Type response..." 
+                      value={msgText} 
+                      onChange={e => setMsgText(e.target.value)} 
+                      style={{ minHeight: '36px', fontSize: 'var(--font-size-sm)', padding: 'var(--space-2)', background: 'var(--color-surface)' }} 
+                    />
+                    <button type="submit" className="btn btn-primary btn-sm" disabled={!msgText.trim()}>
+                      Send
+                    </button>
+                  </form>
                 </div>
               )}
             </div>
@@ -157,17 +182,16 @@ export default function DashboardPage() {
 
         {/* RIGHT COLUMN */}
         <div className="cbdc-col">
-          {/* ITEMS HORIZONTAL */}
           <div className="cbdc-widget" style={{ paddingBottom: 'var(--space-2)' }}>
             <div className="cbdc-widget-title">Items</div>
-            <div className="cbdc-items-scroll">
+            <div className="cbdc-items-scroll custom-scrollbar" style={{ display: 'flex', overflowX: 'auto', gap: 'var(--space-3)', paddingBottom: 'var(--space-2)', margin: '0 0' }}>
               {items.map(item => (
-                <div key={item.id} className="cbdc-item-card hover-lift">
+                <div key={item.id} className="cbdc-item-card hover-lift" style={{ flex: '0 0 auto', minWidth: '120px' }}>
                   <div style={{ width: '100%', height: 60, background: 'var(--color-glass-base)', borderRadius: 'var(--radius-sm)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Layers size={24} style={{ color: 'var(--color-primary)' }} />
                   </div>
-                  <p style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>{item.name}</p>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-xs)' }}>{formatPrice(item.price)}</p>
+                  <p style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textAlign: 'center' }}>{item.name}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-xs)', textAlign: 'center' }}>{formatPrice(item.price)}</p>
                 </div>
               ))}
             </div>
@@ -217,7 +241,9 @@ export default function DashboardPage() {
                       }}>
                         <div>
                           <p style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                            {o.userPhone}
+                            <a href={`tel:${o.userPhone}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                              {o.userPhone}
+                            </a>
                             <span style={{
                               display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: statusColors[o.status]
                             }} />

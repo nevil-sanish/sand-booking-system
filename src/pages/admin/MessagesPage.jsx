@@ -58,7 +58,7 @@ export default function AdminMessagesPage() {
             {approvedUsers.map(u => {
               const userMsgs = getMessagesByUser(u.id);
               const lastMsg = userMsgs[0];
-              const unseenCount = userMsgs.filter(m => m.status !== 'seen').length;
+              const totalMsgsCount = userMsgs.length;
 
               return (
                 <div
@@ -83,8 +83,8 @@ export default function AdminMessagesPage() {
                         {formatRelativeTime(lastMsg.createdAt)}
                       </span>
                     )}
-                    {unseenCount > 0 && (
-                      <span className="nav-badge" style={{ position: 'static' }}>{unseenCount}</span>
+                    {totalMsgsCount > 0 && (
+                      <span className="badge badge-pending" style={{ padding: '2px 6px', fontSize: 9 }}>{totalMsgsCount} Msg{totalMsgsCount !== 1 ? 's' : ''}</span>
                     )}
                   </div>
                   <ChevronRight size={16} style={{ color: 'var(--color-text-muted)' }} />
