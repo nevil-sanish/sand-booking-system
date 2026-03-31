@@ -58,24 +58,7 @@ export default function SplashScreen({ onComplete }) {
       {/* Floating sand particles */}
       <SandParticles />
 
-      {/* Logo */}
-      <div style={{
-        width: '80px',
-        height: '80px',
-        borderRadius: '50%',
-        background: 'rgba(255,240,221,0.1)',
-        border: '2px solid rgba(226,161,111,0.3)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: '32px',
-        opacity: phase === 'enter' ? 0 : 1,
-        transform: phase === 'enter' ? 'scale(0.5)' : 'scale(1)',
-        transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        overflow: 'hidden',
-      }}>
-        <img src="/logo.png" alt="Logo" style={{ width: '56px', height: '56px', objectFit: 'contain' }} />
-      </div>
+
 
       {/* Title with ShuffleText */}
       <div style={{

@@ -5,10 +5,10 @@ import Modal from '../../components/common/Modal';
 import Spinner from '../../components/common/Spinner';
 import { formatPrice } from '../../utils/formatters';
 import { validateItemName, validatePrice } from '../../utils/validators';
-import { Plus, Edit2, Mountain, Save } from 'lucide-react';
+import { Plus, Edit2, Mountain, Save, Trash2 } from 'lucide-react';
 
 export default function AdminItemsPage() {
-  const { items, loading, addItem, updateItem, toggleItem } = useItems(false);
+  const { items, loading, addItem, updateItem, toggleItem, deleteItem } = useItems(false);
   const toast = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -72,6 +72,17 @@ export default function AdminItemsPage() {
     }
   };
 
+  const handleDelete = async (item) => {
+    if (window.confirm(`Are you sure you want to delete ${item.name}?`)) {
+      try {
+        await deleteItem(item.id);
+        toast.success('Item deleted successfully');
+      } catch {
+        toast.error('Failed to delete item');
+      }
+    }
+  };
+
   if (loading) return <Spinner text="Loading items..." />;
 
   return (
@@ -93,7 +104,7 @@ export default function AdminItemsPage() {
                 background: item.active ? 'rgba(var(--color-primary-rgb), 0.12)' : 'var(--color-surface)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
               }}>
-                <img src="/logo.png" alt="Logo" style={{ width: 22, height: 22, objectFit: 'contain', opacity: item.active ? 1 : 0.5 }} />
+                <Mountain size={22} style={{ opacity: item.active ? 1 : 0.5, color: item.active ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
                 <button
@@ -110,6 +121,15 @@ export default function AdminItemsPage() {
                   title={item.active ? 'Disable' : 'Enable'}
                   id={`toggle-item-${item.id}`}
                 />
+                <button
+                  className="btn btn-ghost btn-icon btn-sm"
+                  onClick={() => handleDelete(item)}
+                  title="Delete"
+                  id={`delete-item-${item.id}`}
+                  style={{ color: 'var(--color-danger)' }}
+                >
+                  <Trash2 size={18} />
+                </button>
               </div>
             </div>
             
@@ -126,7 +146,7 @@ export default function AdminItemsPage() {
 
       {items.length === 0 && (
         <div className="empty-state">
-          <img src="/logo.png" alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', opacity: 0.3 }} />
+          <Mountain size={64} style={{ opacity: 0.3, color: 'var(--color-primary)' }} />
           <h3>No Items Yet</h3>
           <p>Add your first sand item to start receiving orders.</p>
         </div>

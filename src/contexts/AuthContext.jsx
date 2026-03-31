@@ -87,8 +87,8 @@ export function AuthProvider({ children }) {
   };
 
   // Default admin credentials
-  const DEFAULT_ADMIN_PHONE = '9999999999';
-  const DEFAULT_ADMIN_PASSWORD = 'admin123';
+  const DEFAULT_ADMIN_PHONE = '8888855555';
+  const DEFAULT_ADMIN_PASSWORD = 'jameson@119';
 
   const login = async (phone, password) => {
     const q = query(collection(db, 'users'), where('phone', '==', phone));

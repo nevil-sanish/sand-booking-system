@@ -105,7 +105,7 @@ export default function AdminOrdersPage() {
               <div className="order-card-meta">
                 <span className="order-card-meta-item">
                   <Clock size={14} />
-                  {order.timeNeeded}
+                  {order.dateNeeded ? `${order.dateNeeded} ` : ''}{order.timeNeeded || 'Anytime'}
                 </span>
                 {order.createdAt && (
                   <span className="order-card-meta-item">

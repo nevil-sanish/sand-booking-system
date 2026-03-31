@@ -182,7 +182,7 @@ export default function DashboardPage() {
 
         {/* RIGHT COLUMN */}
         <div className="cbdc-col">
-          <div className="cbdc-widget" style={{ paddingBottom: 'var(--space-2)' }}>
+          <div className="cbdc-widget" style={{ paddingBottom: 'var(--space-2)', overflow: 'hidden auto' }}>
             <div className="cbdc-widget-title">Items</div>
             <div className="cbdc-items-scroll custom-scrollbar" style={{ display: 'flex', overflowX: 'auto', gap: 'var(--space-3)', paddingBottom: 'var(--space-2)', margin: '0 0' }}>
               {items.map(item => (

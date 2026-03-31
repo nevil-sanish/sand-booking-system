@@ -105,7 +105,7 @@
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-[data-theme='dark'] {
+:root {
   --color-bg: #2D2424; /* Dark earthy brown from Photo 2 */
   --color-bg-secondary: #3B3030;
   --color-bg-tertiary: #4A3C3C;
@@ -194,6 +194,16 @@ input, select, textarea {
   font-size: inherit;
   outline: none;
   border: none;
+}
+
+/* Fix autofill styles for dark theme inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #140C08 inset !important;
+    -webkit-text-fill-color: #FFF0DD !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 ul, ol {
@@ -389,7 +399,7 @@ body > *,
 .cbdc-dashboard {
   --dash-gap: var(--space-4);
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   gap: var(--dash-gap);
   height: calc(100vh - var(--header-height) - var(--space-8));
   overflow: hidden;
@@ -401,12 +411,14 @@ body > *,
   flex-direction: column;
   gap: var(--dash-gap);
   height: 100%;
+  min-width: 0;
 }
 
 .cbdc-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--dash-gap);
+  flex-shrink: 0; /* prevent stat rows from collapsing and squeezing the Messages pane */
 }
 
 .cbdc-widget {
@@ -421,6 +433,7 @@ body > *,
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  min-width: 0; /* enforce column boundary so items scroll doesn't blow out the grid */
 }
 
 .cbdc-widget-title {
@@ -514,4 +527,26 @@ body > *,
     height: auto;
     overflow: visible;
   }
+}
+
+/* ===== TYPEWRITER ANIMATION ===== */
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--color-primary);
+  margin: 0 auto;
+  animation: 
+    typing 1.5s steps(30, end),
+    blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: var(--color-primary); }
 }

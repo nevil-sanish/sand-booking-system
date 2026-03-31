@@ -132,22 +132,6 @@ export default function LoginPage() {
         zIndex: 10,
       }}>
 
-        {/* Logo Icon */}
-        <div style={{
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          background: 'rgba(226, 161, 111, 0.1)',
-          border: '1px solid rgba(226, 161, 111, 0.25)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 20px',
-          boxShadow: '0 4px 20px rgba(226, 161, 111, 0.15)',
-          overflow: 'hidden',
-        }}>
-          <img src="/logo.png" alt="Logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
-        </div>
 
         {/* Title */}
         <h1 style={{

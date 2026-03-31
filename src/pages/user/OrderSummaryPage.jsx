@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useOrders } from '../../hooks/useOrders';
 import { useToast } from '../../contexts/ToastContext';
 import { formatPrice } from '../../utils/formatters';
-import { MapPin, Clock, Package, CheckCircle, Send, Navigation, Search, X } from 'lucide-react';
+import { MapPin, Clock, Package, CheckCircle, Send, Navigation, Search, X, Calendar } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -40,6 +40,7 @@ function FlyToPosition({ position }) {
 export default function OrderSummaryPage() {
   const [location, setLocation] = useState(null);
   const [timeNeeded, setTimeNeeded] = useState('');
+  const [dateNeeded, setDateNeeded] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showMap, setShowMap] = useState(false);
@@ -163,10 +164,6 @@ export default function OrderSummaryPage() {
   };
 
   const handlePlaceOrder = async () => {
-    if (!timeNeeded) {
-      toast.warning('Please select a delivery time');
-      return;
-    }
 
     setSubmitting(true);
 
@@ -183,6 +180,7 @@ export default function OrderSummaryPage() {
         })),
         totalPrice,
         timeNeeded,
+        dateNeeded,
       };
 
       // Location is optional
@@ -350,11 +348,24 @@ export default function OrderSummaryPage() {
         )}
       </div>
 
-      {/* Time */}
+      {/* Time & Date (Optional) */}
       <div className="summary-section">
-        <h3>Delivery Time</h3>
-        <div className="form-group">
-          <div className="form-input-icon">
+        <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>Delivery Date & Time <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', fontWeight: 400 }}>(optional)</span></span>
+        </h3>
+        <div className="form-group" style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <div className="form-input-icon" style={{ flex: 1 }}>
+            <Calendar />
+            <input
+              type="date"
+              className="form-input"
+              value={dateNeeded}
+              onChange={e => setDateNeeded(e.target.value)}
+              id="delivery-date"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div className="form-input-icon" style={{ flex: 1 }}>
             <Clock />
             <input
               type="time"
@@ -362,6 +373,7 @@ export default function OrderSummaryPage() {
               value={timeNeeded}
               onChange={e => setTimeNeeded(e.target.value)}
               id="delivery-time"
+              style={{ width: '100%' }}
             />
           </div>
         </div>
@@ -370,7 +382,7 @@ export default function OrderSummaryPage() {
       <button
         className="btn btn-primary btn-lg btn-full ripple mt-4"
         onClick={handlePlaceOrder}
-        disabled={submitting || !timeNeeded}
+        disabled={submitting}
         id="place-order-btn"
       >
         {submitting ? (

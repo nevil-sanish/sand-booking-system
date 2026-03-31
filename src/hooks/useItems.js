@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase';
 import {
   collection, query, where, orderBy, onSnapshot,
-  addDoc, updateDoc, doc, serverTimestamp
+  addDoc, updateDoc, doc, serverTimestamp, deleteDoc
 } from 'firebase/firestore';
 
 export function useItems(activeOnly = true) {
@@ -59,5 +59,9 @@ export function useItems(activeOnly = true) {
     });
   };
 
-  return { items, loading, addItem, updateItem, toggleItem };
+  const deleteItem = async (itemId) => {
+    await deleteDoc(doc(db, 'items', itemId));
+  };
+
+  return { items, loading, addItem, updateItem, toggleItem, deleteItem };
 }

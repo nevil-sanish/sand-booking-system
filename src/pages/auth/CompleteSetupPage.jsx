@@ -43,7 +43,7 @@ export default function CompleteSetupPage() {
       <div className="card glass-panel auth-card" style={{ width: '100%', maxWidth: '360px', padding: 'var(--space-6)' }}>
         <div className="text-center mb-6">
           <div className="avatar avatar-lg" style={{ margin: '0 auto var(--space-4)', background: 'var(--color-primary-light)', color: '#fff' }}>
-            <img src="/logo.png" alt="Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+            <Mountain size={28} />
           </div>
           <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, marginBottom: 'var(--space-1)' }}>Complete Setup</h1>
           <p className="text-muted" style={{ fontSize: 'var(--font-size-sm)' }}>

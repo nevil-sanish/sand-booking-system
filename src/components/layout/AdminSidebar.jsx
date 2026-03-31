@@ -5,7 +5,6 @@ import { db } from '../../services/firebase';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { APP_NAME } from '../../utils/constants';
 import { 
-  Mountain, 
   LayoutDashboard, 
   ShoppingCart, 
   Bell, 
@@ -14,31 +13,11 @@ import {
   MessageSquare, 
   Settings,
   LogOut,
-  Menu,
-  X,
-  Moon,
-  Sun
+  X
 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
 
-function ThemeToggle() {
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-  return (
-    <button
-      className="btn btn-ghost btn-full flex-between hover-lift"
-      onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
-    >
-      <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-      </span>
-    </button>
-  );
-}
+
 
 export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
   const { logout } = useAuth();
@@ -81,9 +60,6 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
       <aside className={`admin-sidebar ${isMobileOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-header flex-between">
           <div className="header-brand">
-            <div className="header-brand-icon">
-              <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-            </div>
             <h2>{APP_NAME}</h2>
           </div>
           {/* Close button only visible on mobile css logically */}
@@ -121,7 +97,6 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
         </nav>
 
         <div className="p-4" style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--color-glass-border)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-          <ThemeToggle />
           <button 
             className="btn btn-ghost btn-full flex-between hover-lift" 
             onClick={handleLogout}
