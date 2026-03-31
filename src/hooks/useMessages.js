@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase';
 import {
   collection, query, where, orderBy, onSnapshot,
-  addDoc, updateDoc, doc, getDocs, serverTimestamp
+  addDoc, updateDoc, doc, serverTimestamp
 } from 'firebase/firestore';
 import { MESSAGE_STATUSES } from '../utils/constants';
 
@@ -18,20 +18,26 @@ export function useMessages(userId = null, isAdmin = false) {
 
     let q;
     if (isAdmin) {
+      // Admin gets all messages. A single-field orderBy needs no composite index.
       q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
     } else {
+      // User query: omit orderBy to avoid requiring a composite Firestore index.
+      // We sort client-side below.
       q = query(
         collection(db, 'messages'),
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', userId)
       );
     }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+      })).sort((a, b) => {
+        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return tb - ta; // newest first (caller reverses for chronological display)
+      });
       setMessages(data);
       setLoading(false);
     }, (error) => {
@@ -50,6 +56,16 @@ export function useMessages(userId = null, isAdmin = false) {
       status: MESSAGE_STATUSES.SENT,
       createdAt: serverTimestamp(),
     });
+    // When a user sends a message, create an admin notification
+    if (!isAdmin) {
+      await addDoc(collection(db, 'notifications'), {
+        title: 'New Message',
+        message: 'A user has sent you a message.',
+        read: false,
+        createdAt: serverTimestamp(),
+        type: 'message',
+      });
+    }
   };
 
   const markAsSeen = async (messageId) => {
@@ -68,8 +84,18 @@ export function useMessages(userId = null, isAdmin = false) {
     return messages.filter(m => m.userId === targetUserId);
   };
 
+  // For user BottomNav badge: unseen messages from admin
   const getUnseenCount = () => {
-    return messages.filter(m => m.status !== MESSAGE_STATUSES.SEEN).length;
+    return messages.filter(
+      m => m.senderId === 'admin' && m.status !== MESSAGE_STATUSES.SEEN
+    ).length;
+  };
+
+  // For admin sidebar badge: unseen messages from users
+  const getUnseenUserMessagesCount = () => {
+    return messages.filter(
+      m => m.senderId !== 'admin' && m.status !== MESSAGE_STATUSES.SEEN
+    ).length;
   };
 
   return {
@@ -80,5 +106,6 @@ export function useMessages(userId = null, isAdmin = false) {
     markAsDelivered,
     getMessagesByUser,
     getUnseenCount,
+    getUnseenUserMessagesCount,
   };
 }

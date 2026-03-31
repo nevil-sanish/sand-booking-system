@@ -12,9 +12,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function HomePage() {
-  const { items, loading: itemsLoading } = useItems(true);
-  const { orders, loading: ordersLoading } = useOrders(null, false);
   const { user } = useAuth();
+  const { items, loading: itemsLoading } = useItems(true);
+  const { orders, loading: ordersLoading } = useOrders(user?.id, false);
   const { cartItems, addToCart, updateQuantity, totalItems, totalPrice } = useCart();
   const toast = useToast();
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase';
 import {
-  collection, query, where, orderBy, onSnapshot,
+  collection, query, where, onSnapshot,
   addDoc, updateDoc, doc, serverTimestamp, deleteDoc
 } from 'firebase/firestore';
 
@@ -10,22 +10,26 @@ export function useItems(activeOnly = true) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // NOTE: We intentionally omit orderBy() here.
+    // Combining where('active','==',true) with orderBy('createdAt','desc')
+    // requires a composite Firestore index that may not be deployed.
+    // Sorting client-side is equivalent and always works.
     let q;
     if (activeOnly) {
-      q = query(
-        collection(db, 'items'),
-        where('active', '==', true),
-        orderBy('createdAt', 'desc')
-      );
+      q = query(collection(db, 'items'), where('active', '==', true));
     } else {
-      q = query(collection(db, 'items'), orderBy('createdAt', 'desc'));
+      q = query(collection(db, 'items'));
     }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+      })).sort((a, b) => {
+        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return tb - ta; // newest first
+      });
       setItems(data);
       setLoading(false);
     }, (error) => {

@@ -46,6 +46,8 @@ const hyperspeedOptions = {
   }
 };
 
+
+
 export default function LoginPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -114,19 +116,30 @@ export default function LoginPage() {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Hyperspeed Background */}
-      <Suspense fallback={null}>
-        <Hyperspeed effectOptions={hyperspeedOptions} />
-      </Suspense>
+
+      {/* Hyperspeed background — pointer-events disabled so canvas never steals focus */}
+      <div
+        aria-hidden="true"
+        style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
+      >
+        <Suspense fallback={null}>
+          <Hyperspeed effectOptions={hyperspeedOptions} />
+        </Suspense>
+      </div>
+
+      {/* ── Glass card ── */}
       <div style={{
         width: '100%',
         maxWidth: '420px',
-        background: 'rgba(20, 12, 8, 0.85)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
+        background: 'rgba(226, 161, 111, 0.05)',
+        backdropFilter: 'blur(28px)',
+        WebkitBackdropFilter: 'blur(28px)',
         borderRadius: '24px',
-        boxShadow: '0 8px 60px rgba(226, 161, 111, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(226, 161, 111, 0.15)',
+        border: '1px solid rgba(226, 161, 111, 0.22)',
+        boxShadow:
+          '0 0 0 1px rgba(255,255,255,0.03) inset,' +
+          '0 8px 32px rgba(0,0,0,0.55),' +
+          '0 0 80px rgba(226,161,111,0.07)',
         padding: '40px 32px 32px',
         position: 'relative',
         zIndex: 10,
@@ -205,10 +218,10 @@ export default function LoginPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                background: 'rgba(255, 255, 255, 0.05)',
+                background: 'rgba(0, 0, 0, 0.28)',
                 borderRadius: '12px',
                 padding: '0 14px',
-                border: errors.phone ? '1.5px solid #EF4444' : '1px solid rgba(226, 161, 111, 0.15)',
+                border: errors.phone ? '1.5px solid #EF4444' : '1px solid rgba(226, 161, 111, 0.2)',
                 transition: 'border-color 0.2s',
               }}>
                 <Phone size={18} color="#E2A16F" />
@@ -240,10 +253,10 @@ export default function LoginPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                background: 'rgba(255, 255, 255, 0.05)',
+                background: 'rgba(0, 0, 0, 0.28)',
                 borderRadius: '12px',
                 padding: '0 14px',
-                border: errors.password ? '1.5px solid #EF4444' : '1px solid rgba(226, 161, 111, 0.15)',
+                border: errors.password ? '1.5px solid #EF4444' : '1px solid rgba(226, 161, 111, 0.2)',
                 transition: 'border-color 0.2s',
               }}>
                 <Lock size={18} color="#E2A16F" />

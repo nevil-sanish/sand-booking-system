@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useMessages } from '../../hooks/useMessages';
 import { useToast } from '../../contexts/ToastContext';
 import Spinner from '../../components/common/Spinner';
-import EmptyState from '../../components/common/EmptyState';
 import { MessageSquare, Check, CheckCheck, Send } from 'lucide-react';
-import { useState } from 'react';
 import { formatRelativeTime } from '../../utils/formatters';
 import { MESSAGE_STATUSES } from '../../utils/constants';
 
@@ -15,6 +13,7 @@ export default function MessagesPage() {
   const toast = useToast();
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
+  const bottomRef = useRef(null);
 
   const handleSend = async () => {
     if (!messageText.trim()) return;
@@ -29,59 +28,104 @@ export default function MessagesPage() {
     }
   };
 
-  // Mark unseen messages as seen on mount / when messages change
+  // Mark admin messages as seen when this page is open
   useEffect(() => {
     messages.forEach(msg => {
-      if (msg.status !== MESSAGE_STATUSES.SEEN) {
+      if (msg.senderId === 'admin' && msg.status !== MESSAGE_STATUSES.SEEN) {
         markAsSeen(msg.id);
       }
     });
   }, [messages]);
 
+  // Auto-scroll to newest message
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   if (loading) return <Spinner text="Loading messages..." />;
 
-  if (messages.length === 0) {
-    return (
-      <EmptyState
-        icon={MessageSquare}
-        title="No Messages"
-        description="Messages from the admin will appear here."
-      />
-    );
-  }
+  // Display messages oldest → newest (hook returns newest-first, so reverse)
+  const chronological = [...messages].reverse();
 
   return (
-    <div className="animate-fade-in app-shell-user" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <h1 className="page-title">Messages</h1>
+    <div
+      className="animate-fade-in"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: 'calc(100dvh - var(--header-height) - var(--bottom-nav-height))',
+        maxWidth: '600px',
+        margin: '0 auto',
+        overflow: 'hidden',
+      }}
+    >
+      <h1 className="page-title" style={{ padding: 'var(--space-4) var(--space-4) var(--space-2)', flexShrink: 0 }}>
+        Messages
+      </h1>
 
-      <div className="messages-list stagger-children" style={{ marginBottom: 80 }}>
-        {messages.map(msg => (
-          <div key={msg.id} className={`message-bubble ${msg.senderId === user.id ? 'message-outgoing' : 'message-incoming'}`}>
-            <p>{msg.content}</p>
-            <div className="message-time" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>{msg.createdAt ? formatRelativeTime(msg.createdAt) : ''}</span>
-              <span className={`message-status ${msg.status === 'seen' ? 'message-status-seen' : ''}`}>
-                {msg.status === 'seen' ? <CheckCheck size={12} /> : <Check size={12} />}
-                {msg.status}
-              </span>
-            </div>
+      {/* Chat Area */}
+      <div
+        className="custom-scrollbar"
+        style={{ flex: 1, overflowY: 'auto', padding: '0 var(--space-4) var(--space-3)' }}
+      >
+        {chronological.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 'var(--space-3)', paddingTop: 'var(--space-10)' }}>
+            <MessageSquare size={48} style={{ color: 'var(--color-text-muted)', opacity: 0.4 }} />
+            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+              No messages yet — say hi! 👋
+            </p>
           </div>
-        ))}
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {chronological.map(msg => (
+              <div
+                key={msg.id}
+                className={`message-bubble ${msg.senderId === user.id ? 'message-outgoing' : 'message-incoming'}`}
+              >
+                <p>{msg.content}</p>
+                <div className="message-time" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <span>{msg.createdAt ? formatRelativeTime(msg.createdAt) : ''}</span>
+                  {msg.senderId === user.id && (
+                    <span className={`message-status ${msg.status === 'seen' ? 'message-status-seen' : ''}`}>
+                      {msg.status === 'seen' ? <CheckCheck size={12} /> : <Check size={12} />}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+        )}
       </div>
-      {/* Message Input */}
-      <div className="message-input-bar" style={{ position: 'fixed', bottom: 'calc(var(--bottom-nav-height) + var(--space-2))', left: 'var(--space-2)', right: 'var(--space-2)', margin: 'auto' }}>
+
+      {/* Input Bar — always visible so user can initiate conversation */}
+      <div
+        className="message-input-bar glass-panel"
+        style={{
+          flexShrink: 0,
+          borderRadius: 0,
+          borderTop: '1px solid var(--color-border)',
+          borderLeft: 'none',
+          borderRight: 'none',
+          borderBottom: 'none',
+          padding: 'var(--space-3)',
+        }}
+      >
         <input
           type="text"
           className="form-input"
-          placeholder="Type a message..."
+          placeholder="Message admin..."
           value={messageText}
           onChange={e => setMessageText(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
+          autoComplete="off"
+          enterKeyHint="send"
         />
         <button
           className="btn btn-primary btn-icon ripple"
           onClick={handleSend}
           disabled={sending || !messageText.trim()}
+          id="send-message-btn"
         >
           {sending ? <div className="spinner spinner-sm" /> : <Send size={20} />}
         </button>

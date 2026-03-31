@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMessages } from '../../hooks/useMessages';
 import { useUsers } from '../../hooks/useUsers';
 import { useToast } from '../../contexts/ToastContext';
@@ -11,12 +11,22 @@ import {
 } from 'lucide-react';
 
 export default function AdminMessagesPage() {
-  const { messages, loading: messagesLoading, sendMessage, getMessagesByUser } = useMessages(null, true);
+  const { messages, loading: messagesLoading, sendMessage, getMessagesByUser, markAsSeen } = useMessages(null, true);
   const { users, loading: usersLoading, getApprovedUsers } = useUsers();
   const toast = useToast();
   const [selectedUser, setSelectedUser] = useState(null);
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
+
+  // Mark user messages as seen when admin opens a conversation
+  useEffect(() => {
+    if (!selectedUser) return;
+    getMessagesByUser(selectedUser.id).forEach(msg => {
+      if (msg.senderId !== 'admin' && msg.status !== 'seen') {
+        markAsSeen(msg.id);
+      }
+    });
+  }, [selectedUser, messages]);
 
   const handleSend = async () => {
     const err = validateMessage(messageText);

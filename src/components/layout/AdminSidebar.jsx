@@ -25,10 +25,24 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
   const location = useLocation();
   const { unreadCount } = useNotifications();
   const [unreadFeedback, setUnreadFeedback] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     const q = query(collection(db, 'feedback'), where('read', '==', false));
     const unsub = onSnapshot(q, (snap) => setUnreadFeedback(snap.size));
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    // Count messages sent by users (not admin) that are still unread
+    const q = query(
+      collection(db, 'messages'),
+      where('status', 'in', ['sent', 'delivered'])
+    );
+    const unsub = onSnapshot(q, (snap) => {
+      const userMsgs = snap.docs.filter(d => d.data().senderId !== 'admin');
+      setUnreadMessages(userMsgs.length);
+    });
     return () => unsub();
   }, []);
 
@@ -89,6 +103,11 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
                 )}
                 {item.label === 'Feedback' && unreadFeedback > 0 && (
                   <span className="nav-badge" style={{ top: -4, right: -4 }}>{unreadFeedback}</span>
+                )}
+                {item.label === 'Messages' && unreadMessages > 0 && (
+                  <span className="nav-badge" style={{ top: -4, right: -4 }}>
+                    {unreadMessages > 9 ? '9+' : unreadMessages}
+                  </span>
                 )}
               </div>
               <span>{item.label}</span>
