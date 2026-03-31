@@ -67,6 +67,50 @@ const fieldStyle = {
   fontFamily: 'var(--font-family)',
 };
 
+const Wrapper = ({ children }) => (
+  <div style={{
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#080404',
+    padding: '24px',
+    position: 'relative',
+    overflow: 'hidden',
+  }}>
+
+    {/* Hyperspeed background — pointer-events disabled so canvas never steals focus */}
+    <div
+      aria-hidden="true"
+      style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
+    >
+      <Suspense fallback={null}>
+        <Hyperspeed effectOptions={hyperspeedOptions} />
+      </Suspense>
+    </div>
+
+    {/* ── Glass card ── */}
+    <div style={{
+      width: '100%',
+      maxWidth: '420px',
+      background: 'rgba(226, 161, 111, 0.05)',
+      backdropFilter: 'blur(28px)',
+      WebkitBackdropFilter: 'blur(28px)',
+      borderRadius: '24px',
+      border: '1px solid rgba(226, 161, 111, 0.22)',
+      boxShadow:
+        '0 0 0 1px rgba(255,255,255,0.03) inset,' +
+        '0 8px 32px rgba(0,0,0,0.55),' +
+        '0 0 80px rgba(226,161,111,0.07)',
+      padding: '40px 32px 32px',
+      position: 'relative',
+      zIndex: 10,
+    }}>
+      {children}
+    </div>
+  </div>
+);
+
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
   const [name, setName] = useState('');
@@ -105,49 +149,7 @@ export default function RegisterPage() {
     }
   };
 
-  const Wrapper = ({ children }) => (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#080404',
-      padding: '24px',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
 
-      {/* Hyperspeed background — pointer-events disabled so canvas never steals focus */}
-      <div
-        aria-hidden="true"
-        style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
-      >
-        <Suspense fallback={null}>
-          <Hyperspeed effectOptions={hyperspeedOptions} />
-        </Suspense>
-      </div>
-
-      {/* ── Glass card ── */}
-      <div style={{
-        width: '100%',
-        maxWidth: '420px',
-        background: 'rgba(226, 161, 111, 0.05)',
-        backdropFilter: 'blur(28px)',
-        WebkitBackdropFilter: 'blur(28px)',
-        borderRadius: '24px',
-        border: '1px solid rgba(226, 161, 111, 0.22)',
-        boxShadow:
-          '0 0 0 1px rgba(255,255,255,0.03) inset,' +
-          '0 8px 32px rgba(0,0,0,0.55),' +
-          '0 0 80px rgba(226,161,111,0.07)',
-        padding: '40px 32px 32px',
-        position: 'relative',
-        zIndex: 10,
-      }}>
-        {children}
-      </div>
-    </div>
-  );
 
   if (success) {
     return (
