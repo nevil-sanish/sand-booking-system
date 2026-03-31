@@ -184,18 +184,9 @@ export default function DashboardPage() {
         <div className="cbdc-col">
           <div className="cbdc-widget" style={{ paddingBottom: 'var(--space-2)' }}>
             <div className="cbdc-widget-title">Items</div>
-            <div className="cbdc-items-scroll custom-scrollbar" style={{
-              display: 'flex',
-              overflowX: 'auto',
-              gap: 'var(--space-3)',
-              paddingBottom: 'var(--space-2)',
-              scrollSnapType: 'x mandatory',
-              WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'thin',
-              maxWidth: '100%',
-            }}>
+            <div className="cbdc-items-scroll custom-scrollbar" style={{ display: 'flex', overflowX: 'auto', gap: 'var(--space-3)', paddingBottom: 'var(--space-2)', margin: '0 0' }}>
               {items.map(item => (
-                <div key={item.id} className="cbdc-item-card hover-lift" style={{ flex: '0 0 120px', minWidth: '120px', scrollSnapAlign: 'start' }}>
+                <div key={item.id} className="cbdc-item-card hover-lift" style={{ flex: '0 0 auto', minWidth: '120px' }}>
                   <div style={{ width: '100%', height: 60, background: 'var(--color-glass-base)', borderRadius: 'var(--radius-sm)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Layers size={24} style={{ color: 'var(--color-primary)' }} />
                   </div>
