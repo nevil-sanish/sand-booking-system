@@ -42,7 +42,7 @@ export default function MessagesPage() {
         markAsSeen(msg.id);
       }
     });
-  }, [messages]);
+  }, [messages, loading]);
 
   // Auto-scroll to newest message
   useEffect(() => {

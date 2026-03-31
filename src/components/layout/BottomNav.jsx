@@ -22,11 +22,13 @@ export default function BottomNav() {
     seenKey ? parseInt(localStorage.getItem(seenKey) || '0', 10) : 0
   );
 
-  // MessagesPage dispatches 'msgs-seen' after updating localStorage.
-  // This listener re-reads the timestamp so the badge drops to 0 without needing
-  // a Firestore round-trip (fixes badge when Firestore security rules block user writes).
+  // Sync seenAt from localStorage whenever seenKey becomes ready (auth is async,
+  // so the useState initializer always runs before user.id is known).
+  // Also re-syncs whenever MessagesPage dispatches 'msgs-seen'.
   useEffect(() => {
     if (!seenKey) return;
+    // Immediate read — covers the case where auth resolved after first render
+    setSeenAt(parseInt(localStorage.getItem(seenKey) || '0', 10));
     const handler = () => {
       setSeenAt(parseInt(localStorage.getItem(seenKey) || '0', 10));
     };
