@@ -401,6 +401,7 @@ body > *,
   flex-direction: column;
   gap: var(--dash-gap);
   height: 100%;
+  min-width: 0;
 }
 
 .cbdc-row {

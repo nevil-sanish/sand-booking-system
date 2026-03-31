@@ -14,6 +14,17 @@
   max-width: 400px;
 }
 
+/* Fix browser autofill white background on dark auth pages */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(20, 12, 8, 1) inset !important;
+  -webkit-text-fill-color: #FFF0DD !important;
+  caret-color: #FFF0DD !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .auth-logo {
   display: flex;
   flex-direction: column;

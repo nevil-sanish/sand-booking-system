@@ -1,47 +1,10 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Phone, UserIcon, CheckCircle, Lock, Eye, EyeOff } from 'lucide-react';
 import { validatePhone, validateName } from '../../utils/validators';
-
-const Hyperspeed = lazy(() => import('../../components/animations/Hyperspeed'));
-
-const hyperspeedOptions = {
-  distortion: 'turbulentDistortion',
-  length: 400,
-  roadWidth: 10,
-  islandWidth: 2,
-  lanesPerRoad: 3,
-  fov: 90,
-  fovSpeedUp: 150,
-  speedUp: 2,
-  carLightsFade: 0.4,
-  totalSideLightSticks: 20,
-  lightPairsPerRoadWay: 40,
-  shoulderLinesWidthPercentage: 0.05,
-  brokenLinesWidthPercentage: 0.1,
-  brokenLinesLengthPercentage: 0.5,
-  lightStickWidth: [0.12, 0.5],
-  lightStickHeight: [1.3, 1.7],
-  movingAwaySpeed: [60, 80],
-  movingCloserSpeed: [-120, -160],
-  carLightsLength: [400 * 0.03, 400 * 0.2],
-  carLightsRadius: [0.05, 0.14],
-  carWidthPercentage: [0.3, 0.5],
-  carShiftX: [-0.8, 0.8],
-  carFloorSeparation: [0, 5],
-  colors: {
-    roadColor: 0x080808,
-    islandColor: 0x0a0a0a,
-    background: 0x080404,
-    shoulderLines: 0xE2A16F,
-    brokenLines: 0xE2A16F,
-    leftCars: [0xE2A16F, 0xD4956A, 0xC08050],
-    rightCars: [0x86B0BD, 0x5C8A98, 0x4A7585],
-    sticks: 0xE2A16F,
-  }
-};
+import DotGrid from '../../components/animations/DotGrid';
 
 const inputStyle = {
   display: 'flex',
@@ -114,9 +77,16 @@ export default function RegisterPage() {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      <Suspense fallback={null}>
-        <Hyperspeed effectOptions={hyperspeedOptions} />
-      </Suspense>
+      <DotGrid
+        dotSize={10}
+        gap={28}
+        baseColor="#3D2A1A"
+        activeColor="#E2A16F"
+        proximity={180}
+        shockRadius={300}
+        shockStrength={4}
+        style={{ pointerEvents: 'auto' }}
+      />
       <div style={{
         width: '100%',
         maxWidth: '420px',
@@ -129,6 +99,8 @@ export default function RegisterPage() {
         padding: '40px 32px 32px',
         position: 'relative',
         zIndex: 10,
+        transform: 'scale(0.75)',
+        transformOrigin: 'center center',
       }}>
         {children}
       </div>
